@@ -1,0 +1,6 @@
+*.sln
+*.suo
+[Tt]hrash/
+bin/
+obj/
+Properties/
