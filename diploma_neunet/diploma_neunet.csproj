@@ -54,6 +54,7 @@
       <DependentUpon>AddExperiment.cs</DependentUpon>
     </Compile>
     <Compile Include="Experiment.cs" />
+    <Compile Include="ExperimentsWorker.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

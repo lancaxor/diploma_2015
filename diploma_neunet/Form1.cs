@@ -44,7 +44,7 @@ namespace diploma_neunet
 
         private void button2_Click(object sender, EventArgs e)
         {
-            ///////////cakk AddExperiment
+            ///////////call AddExperiment
         }
 
         private void btnClear_Click(object sender, EventArgs e)
