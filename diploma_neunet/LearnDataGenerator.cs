@@ -15,14 +15,14 @@ namespace diploma_neunet
 
         public LearnDataGenerator()
         {
-            //r = new Random();
-            //Generate(r.Next(0, 9).ToString()[0], 50);      //0..9
+            r = new Random();
+            Generate(r.Next(0, 9).ToString()[0], 50);      //0..9
             //Generate((char)('A' + r.Next(0, 25)), 50);   //A..Z
         }
 
         public static int[] Generate(char ch, int size)
         {
-            r = new Random();
+            //r = new Random();
             currNoise = r.Next(MaxNoise);
 
             int[] data = new int[size * size];
@@ -39,7 +39,7 @@ namespace diploma_neunet
                 res.SetPixel(x, y, res.GetPixel(x, y).B > 127 ? Color.Black : Color.White);
             }
 
-            TestForm(res);
+            // TestForm(res);
             for (int y = 0, i = 0; y < size; y++)
                 for (int x = 0; x < size; x++, i++)
                     data[i] = res.GetPixel(x, y).B > 127 ? 0 : 1;

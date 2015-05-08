@@ -5,7 +5,7 @@ using System.Text;
 
 namespace diploma_neunet
 {
-    class NeuNet
+    public class NeuNet
     {
         int N0, N1, N2;     // num of neurons in input, hidden and output layers
         int era;
@@ -37,6 +37,7 @@ namespace diploma_neunet
             r = new Random();
             era = 0;
         }
+        #region Learning
 
         public void LearnInt()
         {
@@ -118,6 +119,8 @@ namespace diploma_neunet
             return res;
         }
 
+        #endregion Learning
+
         private void AllocMem()
         {
             this.out0 = new int[N0];                //input data
@@ -130,6 +133,22 @@ namespace diploma_neunet
             this.delta = new double[N2];    // Math.Max(N2, N1)];
             fxHidden = new List<int>();             //hidden layer fixed
             fxOut = new List<int>();                //output layer fixed;
+        }
+
+        public int Test(int[] inputData)
+        {
+            //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
+            int res = 0;
+            if (this.N0 != inputData.Length)
+            {
+                System.Windows.Forms.MessageBox.Show("Wrong input test data!");
+                return -1;
+            }
+
+            for (int i = 0; i < this.N0; i++)
+                this.out0[i] = inputData[i];
+
+            return 0;
         }
 
         private void GenerateIntInput(int num)

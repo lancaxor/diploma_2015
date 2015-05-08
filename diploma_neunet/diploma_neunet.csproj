@@ -55,11 +55,11 @@
     </Compile>
     <Compile Include="Experiment.cs" />
     <Compile Include="ExperimentsWorker.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <None Include="Thrash\Link.cs" />
     <Compile Include="GraphWorker.cs">
@@ -69,6 +69,13 @@
       <DependentUpon>GraphWorker.cs</DependentUpon>
     </Compile>
     <Compile Include="LearnDataGenerator.cs" />
+    <Compile Include="MainFormWithPaint.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainFormWithPaint.designer.cs">
+      <DependentUpon>MainFormWithPaint.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NeuCoord.cs" />
     <Compile Include="NeuNet.cs" />
     <Compile Include="NeuronProp.cs" />
     <Compile Include="Program.cs" />
@@ -78,11 +85,14 @@
     <EmbeddedResource Include="AddExperiment.resx">
       <DependentUpon>AddExperiment.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GraphWorker.resx">
       <DependentUpon>GraphWorker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainFormWithPaint.resx">
+      <DependentUpon>MainFormWithPaint.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace diploma_neunet
 {
-    abstract class NeuronProp
+    static class NeuronProp
     {
 
         static List<int> FixedHidden = new List<int>();

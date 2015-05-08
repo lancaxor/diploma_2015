@@ -9,14 +9,18 @@ namespace diploma_neunet
     {
         private List<Experiment> exps;
 
-        public sealed ExperimentsWorker()
+        public ExperimentsWorker()
         {
             exps = new List<Experiment>();
         }
 
         public Experiment this[int i]
         {
-            get { return exps[i]; }
+            get {
+                if (this.exps.Count < i)
+                    return exps[i];
+                else return null;
+            }
             set
             {
                 if (exps.Count < i)
@@ -24,9 +28,14 @@ namespace diploma_neunet
             }
         }
 
-        public void Create(string str)
+        public void Add(Experiment experiment)
         {
-            this.exps.Add(new Experiment { name = str });
+            this.exps.Add(new Experiment { fixedNeurons = experiment.fixedNeurons, time = experiment.time, name = experiment.name });
+        }
+
+        public void Clear()
+        {
+            this.exps.Clear();
         }
     }
 }
