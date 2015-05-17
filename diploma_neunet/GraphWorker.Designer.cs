@@ -31,43 +31,44 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            this.mainChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            ((System.ComponentModel.ISupportInitialize)(this.mainChart)).BeginInit();
             this.SuspendLayout();
             // 
-            // chart1
+            // mainChart
             // 
             chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            this.chart1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mainChart.ChartAreas.Add(chartArea1);
+            this.mainChart.Dock = System.Windows.Forms.DockStyle.Top;
             legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(0, 0);
-            this.chart1.Name = "chart1";
+            this.mainChart.Legends.Add(legend1);
+            this.mainChart.Location = new System.Drawing.Point(0, 0);
+            this.mainChart.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.mainChart.Name = "mainChart";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(754, 450);
-            this.chart1.TabIndex = 0;
-            this.chart1.Text = "chart1";
+            this.mainChart.Series.Add(series1);
+            this.mainChart.Size = new System.Drawing.Size(566, 366);
+            this.mainChart.TabIndex = 0;
             // 
             // GraphWorker
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(754, 519);
-            this.Controls.Add(this.chart1);
+            this.ClientSize = new System.Drawing.Size(566, 422);
+            this.Controls.Add(this.mainChart);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "GraphWorker";
             this.Text = "GraphWorker";
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mainChart)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart mainChart;
 
     }
 }

@@ -11,6 +11,7 @@ namespace diploma_neunet
         int era;
         const double alpha = 0.1;       //parameter of sigmoida's HAKJlOH 0_o
         const double eta = 1;           //learning speed coeficient
+        const double minError = 0.01;   // the minimal error
 
         int[] out0;         // layer 0 (input)
         double[] out1;      // layer 1 (hidden)
@@ -20,6 +21,7 @@ namespace diploma_neunet
         double[,] weights01;// weights between input and hidden layers
         double[,] weights12;// weights between hidden and output layers
         double[] delta;     //local grad between hidden and input layers
+        double avgErr;      //average error
 
         List<int> fxHidden, fxOut;
 
@@ -45,7 +47,7 @@ namespace diploma_neunet
             AllocMem();
             InitWeights();
 
-            while (true)
+            while (this.avgErr > minError)
             {
                 currInput = r.Next(9);      //for 0..9
                 GenerateIntInput(currInput);
@@ -53,7 +55,7 @@ namespace diploma_neunet
 
                 ForwardPass();
                 BackwardPass();
-                CountError();
+                this.avgErr = CountError();
                 this.era++;
             }
         }

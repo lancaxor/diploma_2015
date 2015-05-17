@@ -18,6 +18,7 @@ namespace diploma_neunet
         Thread learner;
         AddExperiment addexp;
         ExperimentsWorker exps;
+        GraphWorker graph;
 
         public MainForm()
         {
@@ -26,11 +27,12 @@ namespace diploma_neunet
             ltime = new List<double>();
             net = new NeuNet { NumInput = 2500, NumHidden = 100, NumOutput = 26 };  //input: 50x50 pixels picture, output: 26 letters
             exps = new ExperimentsWorker();
+            graph = new GraphWorker();
         }
 
         private void btnLearn_Click(object sender, EventArgs e)
         {
-            //net.LearnInt();
+            //net.LearnInt();       //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
             if (this.clbExperiments.Items.Count < 1)
                 return;
             for (int i = 0; i < this.clbExperiments.Items.Count; i++)
@@ -69,7 +71,10 @@ namespace diploma_neunet
 
         private void btnGraph_Click(object sender, EventArgs e)
         {
-            //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
+            //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
+            this.graph.AddExperiment(new Experiment());
+            this.graph.ShowDialog();
+            
         }
 
         private void btnTest_Click(object sender, EventArgs e)

@@ -47,5 +47,11 @@ namespace diploma_neunet
         {
             e.Cancel = !this.CanClose;
         }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.CanClose = true;
+            this.Close();
+        }
     }
 }

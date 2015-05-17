@@ -39,41 +39,46 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 14);
+            this.label1.Location = new System.Drawing.Point(9, 11);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(136, 17);
+            this.label1.Size = new System.Drawing.Size(104, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Fixed Neurons Index";
             // 
             // tbIndexes
             // 
-            this.tbIndexes.Location = new System.Drawing.Point(154, 11);
+            this.tbIndexes.Location = new System.Drawing.Point(116, 9);
+            this.tbIndexes.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tbIndexes.Name = "tbIndexes";
-            this.tbIndexes.Size = new System.Drawing.Size(266, 22);
+            this.tbIndexes.Size = new System.Drawing.Size(200, 20);
             this.tbIndexes.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 42);
+            this.label2.Location = new System.Drawing.Point(9, 34);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(109, 17);
+            this.label2.Size = new System.Drawing.Size(82, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Experiment Title";
             // 
             // tbTitle
             // 
-            this.tbTitle.Location = new System.Drawing.Point(154, 39);
+            this.tbTitle.Location = new System.Drawing.Point(116, 32);
+            this.tbTitle.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tbTitle.Name = "tbTitle";
-            this.tbTitle.Size = new System.Drawing.Size(266, 22);
+            this.tbTitle.Size = new System.Drawing.Size(200, 20);
             this.tbTitle.TabIndex = 1;
             // 
             // btnCreate
             // 
             this.btnCreate.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnCreate.Location = new System.Drawing.Point(335, 67);
+            this.btnCreate.Location = new System.Drawing.Point(251, 54);
+            this.btnCreate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(85, 25);
+            this.btnCreate.Size = new System.Drawing.Size(64, 20);
             this.btnCreate.TabIndex = 2;
             this.btnCreate.Text = "Create";
             this.btnCreate.UseVisualStyleBackColor = true;
@@ -82,18 +87,20 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(244, 67);
+            this.btnCancel.Location = new System.Drawing.Point(183, 54);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(85, 25);
+            this.btnCancel.Size = new System.Drawing.Size(64, 20);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // AddExperiment
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(432, 108);
+            this.ClientSize = new System.Drawing.Size(324, 88);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnCreate);
             this.Controls.Add(this.tbTitle);
@@ -101,6 +108,7 @@
             this.Controls.Add(this.tbIndexes);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "AddExperiment";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add Experiment";
