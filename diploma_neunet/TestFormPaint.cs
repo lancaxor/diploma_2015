@@ -11,16 +11,16 @@ using diploma_neunet;
 
 namespace NeuroNet_Hard
 {
-    public partial class MainFormWithPaint : Form
+    public partial class TestFormPaint : Form
     {
         private bool drawing = false;
         Bitmap bmp;         // for recognizing
         Point oldP;
         Pen pen;
-        const int bsize = 50;
+        const int bsize = 28;
         NeuNet net;
 
-        public MainFormWithPaint(NeuNet network)
+        public TestFormPaint(NeuNet network)
         {
             InitializeComponent();
             //this.pictureBox1.Width = this.pictureBox1.Height = 50;
@@ -86,19 +86,8 @@ namespace NeuroNet_Hard
 
         private void button2_Click(object sender, EventArgs e)          //recognize
         {
-            //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
-            string res = "";
-            if (res.Equals(""))
-            {
-                MessageBox.Show("No neurons is created. Please, learn first.");
-                return;
-            }
-            if (res.Contains('~'))
-            {
-                MessageBox.Show("Maybe this is " + res.Substring(1));
-            }
-            else
-                MessageBox.Show("\"" + res + "\" recognized!");
+            int result = this.net.Test(this.PictureToInt());
+            MessageBox.Show(String.Format("Recognized: {0}", result));
         }
 
         private void CropImage()

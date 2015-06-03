@@ -1,6 +1,6 @@
 ﻿namespace NeuroNet_Hard
 {
-    partial class MainFormWithPaint
+    partial class TestFormPaint
     {
         /// <summary>
         /// Required designer variable.
@@ -65,7 +65,7 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // MainFormWithPaint
+            // TestFormPaint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -75,7 +75,7 @@
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "MainFormWithPaint";
+            this.Name = "TestFormPaint";
             this.Text = "Lyashenko\'s Neural Net";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

@@ -13,36 +13,42 @@ namespace diploma_neunet
     public partial class MainForm : Form
     {
         NeuNet net;
-        List<Double> ltime;
         int picsize = 50;
         Thread learner;
         AddExperiment addexp;
         ExperimentsWorker exps;
         GraphWorker graph;
+        TimeSpan learnTime;
 
         public MainForm()
         {
             InitializeComponent();
             this.clbExperiments.CheckOnClick = false;
-            ltime = new List<double>();
-            net = new NeuNet { NumInput = 2500, NumHidden = 100, NumOutput = 26 };  //input: 50x50 pixels picture, output: 26 letters
+            net = new NeuNet (); //{ NumInput = 2500, NumHidden = 100, NumOutput = 10 };  //input: 50x50 pixels picture, output: 26 letters
             exps = new ExperimentsWorker();
             graph = new GraphWorker();
+            learner = new Thread(new ThreadStart(this.Learn));
         }
-
+        private void Learn()
+        {
+            this.learnTime = this.net.LearnInt();
+        }
         private void btnLearn_Click(object sender, EventArgs e)
         {
-            //net.LearnInt();       //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
+            net.LearnInt();
+            /*
             if (this.clbExperiments.Items.Count < 1)
                 return;
-            for (int i = 0; i < this.clbExperiments.Items.Count; i++)
+            learner.Start();
+            for (int j = 0; j < this.clbExperiments.Items.Count; j++)
             {
                 if (this.clbExperiments.CheckedItems.Count == this.clbExperiments.Items.Count)
                     break;
-                if (this.clbExperiments.CheckedIndices.Contains(i))
+                if (this.clbExperiments.CheckedIndices.Contains(j))
                     continue;
-                this.clbExperiments.SetItemChecked(i, true);
+                this.clbExperiments.SetItemChecked(j, true);
             }
+             */
             MessageBox.Show("EndeD");
         }
 
@@ -79,7 +85,7 @@ namespace diploma_neunet
 
         private void btnTest_Click(object sender, EventArgs e)
         {
-            using (var t = new NeuroNet_Hard.MainFormWithPaint(this.net))
+            using (var t = new NeuroNet_Hard.TestFormPaint(this.net))
             {
                 t.ShowDialog();
             }

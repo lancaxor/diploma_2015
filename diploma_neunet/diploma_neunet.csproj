@@ -69,15 +69,16 @@
       <DependentUpon>GraphWorker.cs</DependentUpon>
     </Compile>
     <Compile Include="LearnDataGenerator.cs" />
-    <Compile Include="MainFormWithPaint.cs">
+    <Compile Include="shared\NetConfig.cs" />
+    <Compile Include="shared\NeuronProp.cs" />
+    <Compile Include="TestFormPaint.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainFormWithPaint.designer.cs">
-      <DependentUpon>MainFormWithPaint.cs</DependentUpon>
+    <Compile Include="TestFormPaint.designer.cs">
+      <DependentUpon>TestFormPaint.cs</DependentUpon>
     </Compile>
     <Compile Include="NeuCoord.cs" />
     <Compile Include="NeuNet.cs" />
-    <Compile Include="NeuronProp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Thrash\UNeuron.cs" />
@@ -91,8 +92,8 @@
     <EmbeddedResource Include="GraphWorker.resx">
       <DependentUpon>GraphWorker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainFormWithPaint.resx">
-      <DependentUpon>MainFormWithPaint.cs</DependentUpon>
+    <EmbeddedResource Include="TestFormPaint.resx">
+      <DependentUpon>TestFormPaint.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
