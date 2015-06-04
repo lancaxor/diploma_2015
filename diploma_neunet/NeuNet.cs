@@ -11,12 +11,12 @@ namespace diploma_neunet
     {
         int N0, N1, N2;     // num of neurons in input, hidden and output layers
         int era;
-        const double alpha = 5;       //parameter of sigmoida's HAKJlOH 0_o
-        const double eta = 0.5;           //learning speed coeficient
+        const double alpha = 1.0;       //parameter of sigmoida's HAKJlOH 0_o
+        double eta = 0.5;           //learning speed coeficient
         const int NumOfInputs = 10;     //number of input symbols
-        const double thresh = 0.3;
+        const double thresh = 1;      //threshold
 
-        int[] out0;         // layer 0 (input)
+        double[] out0;         // layer 0 (input)
         double[] out1;      // layer 1 (hidden)
         double[] output;    // layer 2 (output)
         double[] correct;   // correct output
@@ -24,12 +24,14 @@ namespace diploma_neunet
         double[,] weights01;// weights between input and hidden layers
         double[,] weights12;// weights between hidden and output layers
         double[] delta;     //local grad between hidden and input layers
-        double avgErr;      //average error
+
+        double avgErr;      //average error (for all iterations)
         double lastAvgError;  // last average error
+        double currErr;     //current error in all neurons
 
         List<int> fxHidden, fxOut;
 
-        int[][] preInput;
+        double[][] preInput;
         double[][] preOutput;
 
         Random r = null;
@@ -44,10 +46,8 @@ namespace diploma_neunet
         {
             r = new Random();
             learner = new LearnDataGenerator();
-            config = new NetConfig { maxEpoch = 500, minError = 0.01, minErrorChange = 0.0001, NumInput = 784, NumHidden = 15000, NumOutput = 10 };
+            config = new NetConfig { maxEpoch = 500, minError = 0.01, minErrorChange = 0.0001, NumInput = 784, NumHidden = 20, NumOutput = 10 };
                 //(100, 0.2, 0.0001);
-            preInput = new int[NumOfInputs][];
-            preOutput = new double[NumOfInputs][];
 
             era = 0;
             this.N0 = config.NumInput;
@@ -64,11 +64,13 @@ namespace diploma_neunet
             InitWeights();
             this.era = 0;
             this.avgErr= int.MaxValue;
+            this.currErr = 0;
             this.PreGenerateInputOutput();          //speed up, memory down
 
             DateTime start = DateTime.Now;
             do
             {
+                //eta = 2;
 
                 for (currInput = 0; currInput < NumOfInputs; currInput++)
                 {
@@ -77,12 +79,15 @@ namespace diploma_neunet
 
                     ForwardPass();
                     BackwardPass();
+
+                    currErr += CountCurrentError();
+                    //eta /= 2;
                 }
                 this.lastAvgError = this.avgErr;
                 this.avgErr = CountAverageError();
                  this.era++;
             } while (Math.Abs(this.avgErr) > config.minError ||
-                this.error.Max<double>() > this.config.minError ||
+                //this.error.Max<double>() > this.config.minError ||
                 Math.Abs(lastAvgError - avgErr) > config.minErrorChange ||
                 this.era < config.maxEpoch);
 
@@ -119,7 +124,7 @@ namespace diploma_neunet
             {
                 currNeuWeight = thresh;
                 for (int j = 0; j < N0; j++)
-                    currNeuWeight += out0[j] * weights01[j, i] * 10;
+                    currNeuWeight += out0[j] * weights01[j, i];
                 out1[i] = config.ActivationFunction(currNeuWeight, alpha);
             }
 
@@ -134,8 +139,7 @@ namespace diploma_neunet
             if (learning)
                 for (int i = 0; i < N2; i++)
                 {
-                    var err = (correct[i] - output[i]);
-                    error[i] = (err * err * 0.5);
+                    error[i] = (correct[i] - output[i]);
                 }
         }
 
@@ -173,10 +177,18 @@ namespace diploma_neunet
 
         private double CountAverageError()
         {
-            double res = 0;
+            double res = currErr / this.error.Length;
+            return res;
+        }
+
+        private double CountCurrentError()
+        {
+            double res = 0.5;
             for (int i = 0; i < N2; i++)
-                res += this.error[i];
-            res /= this.error.Length;
+            {
+                var e = this.error[i];
+                res += e*e;
+            }
             return res;
         }
 
@@ -184,7 +196,7 @@ namespace diploma_neunet
 
         private void AllocMem()
         {
-            this.out0 = new int[N0];                //input data
+            this.out0 = new double[N0];                //input data
             this.out1 = new double[N1];             //hidden layer output
             this.output = new double[N2];           //output layer output
             this.correct = new double[N2];          //correct output data
@@ -192,6 +204,8 @@ namespace diploma_neunet
             this.weights01 = new double[N0, N1];    //input-hidden weights
             this.weights12 = new double[N1, N2];    //hidden-output weights
             this.delta = new double[N2];    // Math.Max(N2, N1)];
+            this.preInput = new double[NumOfInputs][];
+            this.preOutput = new double[NumOfInputs][];
             fxHidden = new List<int>();             //hidden layer fixed
             fxOut = new List<int>();                //output layer fixed;
         }
@@ -273,12 +287,11 @@ namespace diploma_neunet
                 this.preOutput[i] = new double[N2];
 
                 for (int j = 0; j < N2; j++)
-                    this.preOutput[i][j] = ((j == i) ? 1 : 0);
+                    this.preOutput[i][j] = ((j == i) ? 1.0 : -1.0);
             }
         }
         private void GenerateIntInput(int num)
         {
-            //this.out0 = learner.Generate(Char.Parse(num.ToString()), (int)Math.Sqrt(this.N0));
             this.out0 = this.preInput[num];
         }
 
@@ -293,11 +306,11 @@ namespace diploma_neunet
         {
             for (int i = 0; i < N0; i++)
                 for (int j = 0; j < N1; j++)
-                    this.weights01[i, j] = (r.NextDouble() - 0.5) / 10;         //-0.05...0.05
+                    this.weights01[i, j] = (r.NextDouble() - 0.5) / 100;         // -0.05...0.05
 
             for (int i = 0; i < N1; i++)
                 for (int j = 0; j < N2; j++)
-                    this.weights12[i, j] = (r.NextDouble() - 0.5) / 10;         //-0.05...0.05
+                    this.weights12[i, j] = (r.NextDouble() - 0.5) / 100;         //-0.05...0.05
         }
     }
 }

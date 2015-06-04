@@ -36,6 +36,7 @@ namespace diploma_neunet
             //var result = NeuronProp.RBF(input, parameter[0]);
             var result = NeuronProp.SigmaFunction(input, parameter[0]);
             //var result = NeuronProp.LogisticFunction(input, parameter[0]);
+            //var result = NeuronProp.TahnFunction(input);
             return result;
         }
     }

@@ -31,6 +31,14 @@ namespace diploma_neunet
             return (res);// > 0.0 ? -1.0 : 1.0);
         }
 
+        public static double TahnFunction(double input)
+        {
+            double a = 1.7159;
+            double b = 2/3;
+            double res = a * Math.Tanh(input * b);
+            return res;
+        }
+
         public static string ArrToProps(double[] array)
         {
             string res = String.Empty;

@@ -10,7 +10,7 @@ namespace diploma_neunet
     class LearnDataGenerator        //Generate vector for neunet learning: char to bitmap then to array
     {
         private static Random r;
-        private const int MaxNoise = 5;     // %
+        private const int MaxNoise = 0;     // %
         private static int currNoise = 0;
 
         public LearnDataGenerator()
@@ -20,12 +20,12 @@ namespace diploma_neunet
             //Generate((char)('A' + r.Next(0, 25)), 50);   //A..Z
         }
 
-        public int[] Generate(char ch, int size)
+        public double[] Generate(char ch, int size)
         {
             //r = new Random();
             currNoise = r.Next(MaxNoise);
 
-            int[] data = new int[size * size];
+            double[] data = new double[size * size];
             Bitmap res = new Bitmap(size, size);
             using (Graphics g = Graphics.FromImage((Image)res))
             {
@@ -42,7 +42,7 @@ namespace diploma_neunet
             //TestForm(res);
             for (int y = 0, i = 0; y < size; y++)
                 for (int x = 0; x < size; x++, i++)
-                    data[i] = res.GetPixel(x, y).B > 127 ? 0 : 1;
+                    data[i] = res.GetPixel(x, y).B > 127 ? -0.8 : 0.8;
             return data;
         }
 
