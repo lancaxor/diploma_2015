@@ -11,10 +11,11 @@ namespace diploma_neunet
     {
         int N0, N1, N2;     // num of neurons in input, hidden and output layers
         int era;
-        const double alpha = 1.0;       //parameter of sigmoida's HAKJlOH 0_o
-        double eta = 0.5;           //learning speed coeficient
+        const double alpha = 0.9;       //parameter of sigmoida's HAKJlOH 0_o
+        double eta = 0.5;               //learning speed coeficient
         const int NumOfInputs = 10;     //number of input symbols
-        const double thresh = 1;      //threshold
+        const double thresh = 1;        //threshold
+        const double momentum = 0.005;    //momentum constant (ischerpivausche, da? XD)
 
         double[] out0;         // layer 0 (input)
         double[] out1;      // layer 1 (hidden)
@@ -23,6 +24,8 @@ namespace diploma_neunet
         double[] error;     // learn error
         double[,] weights01;// weights between input and hidden layers
         double[,] weights12;// weights between hidden and output layers
+        double[,] old_weights01;
+        double[,] old_weights12;
         double[] delta;     //local grad between hidden and input layers
 
         double avgErr;      //average error (for all iterations)
@@ -37,6 +40,7 @@ namespace diploma_neunet
         Random r = null;
         LearnDataGenerator learner = null;
         NetConfig config = null;
+        MainForm parent;
 
         #region Properties
         public int Epoch { get { return this.era; } }
@@ -46,7 +50,7 @@ namespace diploma_neunet
         {
             r = new Random();
             learner = new LearnDataGenerator();
-            config = new NetConfig { maxEpoch = 500, minError = 0.01, minErrorChange = 0.0001, NumInput = 784, NumHidden = 20, NumOutput = 10 };
+            config = new NetConfig { maxEpoch = 2000, minError = 0.05, minErrorChange = 0.000001, NumInput = 784, NumHidden = 50, NumOutput = 10 };
                 //(100, 0.2, 0.0001);
 
             era = 0;
@@ -57,21 +61,24 @@ namespace diploma_neunet
 
         #region Learning
         string junk = string.Empty;
-        public TimeSpan LearnInt()
+        public TimeSpan LearnInt(MainForm parentForm)
         {
             int currInput;
             AllocMem();
             InitWeights();
+            this.parent = parentForm;
             this.era = 0;
             this.avgErr= int.MaxValue;
             this.currErr = 0;
+            double currAbsErr = 0;
             this.PreGenerateInputOutput();          //speed up, memory down
 
             DateTime start = DateTime.Now;
             do
             {
-                //eta = 2;
-
+                if (!this.parent.GetState())
+                    break;
+                currErr = 0;
                 for (currInput = 0; currInput < NumOfInputs; currInput++)
                 {
                     GenerateIntInput(currInput);
@@ -82,13 +89,16 @@ namespace diploma_neunet
 
                     currErr += CountCurrentError();
                     //eta /= 2;
+                    Application.DoEvents();
                 }
                 this.lastAvgError = this.avgErr;
                 this.avgErr = CountAverageError();
-                 this.era++;
-            } while (Math.Abs(this.avgErr) > config.minError ||
+                this.era++;
+                currAbsErr = Math.Abs(this.avgErr);
+                this.parent.SetState(String.Format("Epoch: {0}; Error: {1}; Error changing: {2}", this.era, (float)currAbsErr, (float)(lastAvgError - avgErr)));
+            } while (currAbsErr > config.minError &&
                 //this.error.Max<double>() > this.config.minError ||
-                Math.Abs(lastAvgError - avgErr) > config.minErrorChange ||
+                Math.Abs(lastAvgError - avgErr) > config.minErrorChange &&
                 this.era < config.maxEpoch);
 
              /*
@@ -112,8 +122,8 @@ namespace diploma_neunet
                     this.era < config.maxEpoch);
             }
             */
-            MessageBox.Show("Testing time!!!");
-            this.TestOutputInput();
+            //MessageBox.Show("Testing time!!!");
+            //this.TestOutputInput();
             return DateTime.Now - start;
         }
 
@@ -151,12 +161,13 @@ namespace diploma_neunet
             {
                 if (fxOut.Contains(i))      //out neuron with index j is fixed //slow down!
                     continue;
-                sig = output[i] * (1 - output[i]) * (correct[i] - output[i]);
+                sig = alpha * output[i] * (1 - output[i]) * (correct[i] - output[i]);
                 this.delta[i] = sig;
                 for (int j = 0; j < N1; j++)
                 {
-                    deltaSum = eta * sig * out1[j];
-                    weights12[j, i] += deltaSum;
+                    double old = weights12[j, i];
+                    weights12[j, i] += eta * sig * out1[j] + momentum * old_weights12[j, i];
+                    old_weights12[j, i] = old;
                 }
             }
 
@@ -167,9 +178,11 @@ namespace diploma_neunet
                 sig = 0;
                 for (int k = 0; k < N2; k++)
                     sig += (this.delta[k] * weights12[i, k]);
-                sig *= out1[i] * (1 - out1[i]);
+                sig *= out1[i] * (1 - out1[i]) * alpha;
                 for (int j = 0; j < N0; j++) {
-                    weights01[j, i] += eta * sig * out0[j];
+                    double old = weights01[j, i];
+                    weights01[j, i] += eta * sig * out0[j] + momentum * old_weights01[j, i];
+                    old_weights01[j, i] = old;
                 }
             }
 
@@ -203,6 +216,8 @@ namespace diploma_neunet
             this.error = new double[N2];            //~Abs(correct-incorrect)
             this.weights01 = new double[N0, N1];    //input-hidden weights
             this.weights12 = new double[N1, N2];    //hidden-output weights
+            this.old_weights01 = new double[N0, N1];
+            this.old_weights12 = new double[N1, N2];
             this.delta = new double[N2];    // Math.Max(N2, N1)];
             this.preInput = new double[NumOfInputs][];
             this.preOutput = new double[NumOfInputs][];
@@ -262,7 +277,7 @@ namespace diploma_neunet
             tf.StartPosition = FormStartPosition.CenterParent;
             tf.ShowDialog();
         }
-        public int Test(int[] inputData)
+        public int Test(double[] inputData)
         {
             int res = 0;
             if (this.N0 != inputData.Length)
@@ -287,7 +302,7 @@ namespace diploma_neunet
                 this.preOutput[i] = new double[N2];
 
                 for (int j = 0; j < N2; j++)
-                    this.preOutput[i][j] = ((j == i) ? 1.0 : -1.0);
+                    this.preOutput[i][j] = ((j == i) ? 2.0 : 0);
             }
         }
         private void GenerateIntInput(int num)

@@ -13,12 +13,13 @@ namespace diploma_neunet
     public partial class MainForm : Form
     {
         NeuNet net;
-        int picsize = 50;
+        //int picsize = 50;
         Thread learner;
         AddExperiment addexp;
         ExperimentsWorker exps;
         GraphWorker graph;
         TimeSpan learnTime;
+        Boolean running;
 
         public MainForm()
         {
@@ -28,14 +29,23 @@ namespace diploma_neunet
             exps = new ExperimentsWorker();
             graph = new GraphWorker();
             learner = new Thread(new ThreadStart(this.Learn));
+            running = false;
         }
         private void Learn()
         {
-            this.learnTime = this.net.LearnInt();
+            this.learnTime = this.net.LearnInt(this);
         }
         private void btnLearn_Click(object sender, EventArgs e)
         {
-            net.LearnInt();
+            if (!this.running)
+            {
+                this.running = true;
+                this.btnLearn.Text = "Stop";
+                net.LearnInt(this);
+                //MessageBox.Show("Ended!");
+            }
+            this.DoStop();
+
             /*
             if (this.clbExperiments.Items.Count < 1)
                 return;
@@ -49,7 +59,11 @@ namespace diploma_neunet
                 this.clbExperiments.SetItemChecked(j, true);
             }
              */
-            MessageBox.Show("EndeD");
+        }
+        private void DoStop()
+        {
+            this.btnLearn.Text = "Learn";
+            this.running = false;
         }
 
         private void AddExperiment_Click(object sender, EventArgs e)
@@ -89,6 +103,16 @@ namespace diploma_neunet
             {
                 t.ShowDialog();
             }
+        }
+
+        internal protected void SetState(String state)
+        {
+            this.tbStatus.Text = state;
+        }
+
+        internal protected bool GetState()
+        {
+            return this.running;
         }
     }
 }

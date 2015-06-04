@@ -31,6 +31,11 @@ namespace diploma_neunet
             return (res);// > 0.0 ? -1.0 : 1.0);
         }
 
+        public static double BinaryFunction(double input)
+        {
+            return (input > 0 ? 0.9 : -0.9);
+        }
+
         public static double TahnFunction(double input)
         {
             double a = 1.7159;
