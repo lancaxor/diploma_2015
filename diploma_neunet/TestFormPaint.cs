@@ -18,6 +18,8 @@ namespace NeuroNet_Hard
         Point oldP;
         Pen pen;
         const int bsize = 28;
+        int currInt = 0;
+        bool bAuto = false;
         NeuNet net;
 
         public TestFormPaint(NeuNet network)
@@ -71,15 +73,16 @@ namespace NeuroNet_Hard
             bmp = new Bitmap(bsize, bsize);
         }
 
-        private int[] PictureToInt()            //this.picture.image => int[]
+        private double[] PictureToInt()            //this.picture.image => int[]
         {
-            CropImage();
-            int[] netIn = new int[this.bmp.Height * this.bmp.Width];
+            if (!bAuto) CropImage();
+
+            double[] netIn = new double[this.bmp.Height * this.bmp.Width];
             Color c = new Color();
             for (int i = 0; i < netIn.Length; i++)
             {
                 c = bmp.GetPixel((int)(i % this.bmp.Width), (int)(i / this.bmp.Width));
-                netIn[i] = c.A;     //image is black-white => c.R = c.G = c.B
+                netIn[i] = c.A > 127 ? -0.8 : 0.8;     //image is black-white => c.R = c.G = c.B
             }
             return netIn;
         }
@@ -159,6 +162,21 @@ namespace NeuroNet_Hard
             }
             //this.pictureBox1.Image = (Image)bmp;
             this.pictureBox1.Refresh();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.bAuto = true;
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.Clear(Color.White);
+                g.DrawString(currInt.ToString(), new Font("Arial", bsize - 2, GraphicsUnit.Pixel), Brushes.Black, 0, 0);
+            }
+            this.pictureBox1.Image = (Image)bmp;
+            currInt++;
+            if (currInt == 10)
+                currInt = 0;
         }
     }
 }
