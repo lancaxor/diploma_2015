@@ -14,7 +14,7 @@ namespace diploma_neunet
         const double alpha = 0.9;       //parameter of sigmoida's HAKJlOH 0_o
         double eta = 0.5;               //learning speed coeficient
         const int NumOfInputs = 10;     //number of input symbols
-        const double thresh = 1;        //threshold
+        const double thresh = 0;        //threshold
         const double momentum = 0.005;    //momentum constant (ischerpivausche, da? XD)
 
         double[] out0;         // layer 0 (input)
@@ -27,6 +27,8 @@ namespace diploma_neunet
         double[,] old_weights01;
         double[,] old_weights12;
         double[] delta;     //local grad between hidden and input layers
+
+        List<int> inputIndecies;
 
         double avgErr;      //average error (for all iterations)
         double lastAvgError;  // last average error
@@ -50,7 +52,7 @@ namespace diploma_neunet
         {
             r = new Random();
             learner = new LearnDataGenerator();
-            config = new NetConfig { maxEpoch = 2000, minError = 0.05, minErrorChange = 0.000001, NumInput = 784, NumHidden = 50, NumOutput = 10 };
+            config = new NetConfig { maxEpoch = 3000, minError = 0.1, minErrorChange = 0.000001, NumInput = 784, NumHidden = 100, NumOutput = 10 };
                 //(100, 0.2, 0.0001);
 
             era = 0;
@@ -63,7 +65,7 @@ namespace diploma_neunet
         string junk = string.Empty;
         public TimeSpan LearnInt(MainForm parentForm)
         {
-            int currInput;
+            int currInput, currIndex;
             AllocMem();
             InitWeights();
             this.parent = parentForm;
@@ -79,8 +81,19 @@ namespace diploma_neunet
                 if (!this.parent.GetState())
                     break;
                 currErr = 0;
-                for (currInput = 0; currInput < NumOfInputs; currInput++)
+
+                for (int i = 0; i < N2; i++)
                 {
+                    inputIndecies.Add(i);
+                }
+
+                //for (currInput = 0; currInput < NumOfInputs; currInput++)
+                while(inputIndecies.Count>0)
+                {
+                    currIndex = r.Next(inputIndecies.Count - 1);
+                    currInput = inputIndecies[currIndex];
+                    inputIndecies.RemoveAt(currIndex);
+
                     GenerateIntInput(currInput);
                     GenerateIntOutput(currInput);
 
@@ -221,8 +234,10 @@ namespace diploma_neunet
             this.delta = new double[N2];    // Math.Max(N2, N1)];
             this.preInput = new double[NumOfInputs][];
             this.preOutput = new double[NumOfInputs][];
+
             fxHidden = new List<int>();             //hidden layer fixed
             fxOut = new List<int>();                //output layer fixed;
+            inputIndecies = new List<int>(N2);
         }
 
         private void TestOutputInput()
@@ -302,7 +317,7 @@ namespace diploma_neunet
                 this.preOutput[i] = new double[N2];
 
                 for (int j = 0; j < N2; j++)
-                    this.preOutput[i][j] = ((j == i) ? 2.0 : 0);
+                    this.preOutput[i][j] = ((j == i) ? 0.3 : -0.3);
             }
         }
         private void GenerateIntInput(int num)
@@ -317,15 +332,19 @@ namespace diploma_neunet
             this.correct = this.preOutput[num];
         }
 
-        private void InitWeights()
+        private void InitWeights()      //disp = links_num^(-1/2)
         {
+
+            var d1 = 1.0 / Math.Sqrt(N1);
+            var d2 = 1.0 / Math.Sqrt(N2);
+
             for (int i = 0; i < N0; i++)
                 for (int j = 0; j < N1; j++)
-                    this.weights01[i, j] = (r.NextDouble() - 0.5) / 100;         // -0.05...0.05
+                    this.weights01[i, j] = d1 * (r.NextDouble() * 2 - 1);         // -0.05...0.05
 
             for (int i = 0; i < N1; i++)
                 for (int j = 0; j < N2; j++)
-                    this.weights12[i, j] = (r.NextDouble() - 0.5) / 100;         //-0.05...0.05
+                    this.weights12[i, j] = d2 * (r.NextDouble() * 2 - 1);         //-0.05...0.05
         }
     }
 }

@@ -81,8 +81,12 @@ namespace NeuroNet_Hard
             Color c = new Color();
             for (int i = 0; i < netIn.Length; i++)
             {
-                c = bmp.GetPixel((int)(i % this.bmp.Width), (int)(i / this.bmp.Width));
-                netIn[i] = c.A > 127 ? -0.8 : 0.8;     //image is black-white => c.R = c.G = c.B
+                int x = (int)i / bsize;
+                int y = ((int)(i / bsize) == 0 ? i : (int)(i % bsize));
+
+                //c = bmp.GetPixel((int)(i % this.bmp.Width), (int)(i / this.bmp.Width));
+                c = bmp.GetPixel(x, y);
+                netIn[i] = c.B > 127 ? -0.8 : 0.8;     //image is black-white => c.R = c.G = c.B
             }
             return netIn;
         }

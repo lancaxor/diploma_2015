@@ -41,8 +41,9 @@ namespace diploma_neunet
             {
                 this.running = true;
                 this.btnLearn.Text = "Stop";
-                net.LearnInt(this);
+                var time = net.LearnInt(this);
                 //MessageBox.Show("Ended!");
+                MessageBox.Show(String.Format("Time elapsed: {0}:{1}:{2}.{3}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds));
             }
             this.DoStop();
 
@@ -101,6 +102,7 @@ namespace diploma_neunet
         {
             using (var t = new NeuroNet_Hard.TestFormPaint(this.net))
             {
+                t.StartPosition = FormStartPosition.CenterParent;
                 t.ShowDialog();
             }
         }
