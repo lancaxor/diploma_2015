@@ -11,11 +11,11 @@ namespace diploma_neunet
     {
         int N0, N1, N2;     // num of neurons in input, hidden and output layers
         int era;
-        const double alpha = 0.9;       //parameter of sigmoida's HAKJlOH 0_o
+        const double alpha = 0.6667;       //parameter of sigmoida's HAKJlOH 0_o
         double eta = 0.5;               //learning speed coeficient
         const int NumOfInputs = 10;     //number of input symbols
-        const double thresh = 0;        //threshold
-        const double momentum = 0.005;    //momentum constant (ischerpivausche, da? XD)
+        const double thresh = 0.0;        //threshold
+        double momentum = 0.0;    //momentum constant (ischerpivausche, da? XD)
 
         double[] out0;         // layer 0 (input)
         double[] out1;      // layer 1 (hidden)
@@ -52,7 +52,7 @@ namespace diploma_neunet
         {
             r = new Random();
             learner = new LearnDataGenerator();
-            config = new NetConfig { maxEpoch = 3000, minError = 0.1, minErrorChange = 0.000001, NumInput = 784, NumHidden = 100, NumOutput = 10 };
+            config = new NetConfig { maxEpoch = 3000, minError = 0.1, minErrorChange = 0.000001, NumInput = 784, NumHidden = 100, NumOutput = 1 };
                 //(100, 0.2, 0.0001);
 
             era = 0;
@@ -76,17 +76,18 @@ namespace diploma_neunet
             this.PreGenerateInputOutput();          //speed up, memory down
 
             DateTime start = DateTime.Now;
+            
             do
             {
                 if (!this.parent.GetState())
                     break;
                 currErr = 0;
 
-                for (int i = 0; i < N2; i++)
+                for (int i = 0; i < NumOfInputs; i++)
                 {
                     inputIndecies.Add(i);
                 }
-
+                
                 //for (currInput = 0; currInput < NumOfInputs; currInput++)
                 while(inputIndecies.Count>0)
                 {
@@ -108,33 +109,42 @@ namespace diploma_neunet
                 this.avgErr = CountAverageError();
                 this.era++;
                 currAbsErr = Math.Abs(this.avgErr);
+                //this.momentum /= 1.5;
                 this.parent.SetState(String.Format("Epoch: {0}; Error: {1}; Error changing: {2}", this.era, (float)currAbsErr, (float)(lastAvgError - avgErr)));
             } while (currAbsErr > config.minError &&
                 //this.error.Max<double>() > this.config.minError ||
                 Math.Abs(lastAvgError - avgErr) > config.minErrorChange &&
                 this.era < config.maxEpoch);
 
-             /*
+            /*
             for (currInput = 0; currInput < 10; currInput++)
             {
                 do
                 {
+                    if (!this.parent.GetState())
+                        break;
+
                     GenerateIntInput(currInput);
                     GenerateIntOutput(currInput);
 
                     ForwardPass();
                     BackwardPass();
 
-                    this.avgErr = CountAverageError();
+
+                    this.avgErr = CountCurrentError();
+                    currAbsErr = Math.Abs(this.avgErr);
+
                     //junk = NeuronProp.ArrToProps(this.output);
 
                     this.era++;
+                    this.parent.SetState(String.Format("\"{0}\" => Epoch: {1}; Error: {2}; Error changing: {3}", currInput, this.era, (float)currAbsErr, (float)(lastAvgError - avgErr)));
+                    Application.DoEvents();
 
-                } while (Math.Abs(this.avgErr) > config.minError &&
-                    this.error.Max<double>() > this.config.minError &&
-                    this.era < config.maxEpoch);
-            }
-            */
+                } while (currAbsErr > config.minError &&
+                Math.Abs(lastAvgError - avgErr) > config.minErrorChange &&
+                this.era < config.maxEpoch);
+            }*/
+            
             //MessageBox.Show("Testing time!!!");
             //this.TestOutputInput();
             return DateTime.Now - start;
@@ -168,13 +178,13 @@ namespace diploma_neunet
 
         private void BackwardPass() //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
         {
-            double sig, deltaSum;
+            double sig;
 
             for (int i = 0; i < N2; i++)        //output => hidden layer
             {
                 if (fxOut.Contains(i))      //out neuron with index j is fixed //slow down!
                     continue;
-                sig = alpha * output[i] * (1 - output[i]) * (correct[i] - output[i]);
+                sig = config.ActivationFunctionDerivative(output[i], alpha) * (correct[i] - output[i]);
                 this.delta[i] = sig;
                 for (int j = 0; j < N1; j++)
                 {
@@ -191,7 +201,7 @@ namespace diploma_neunet
                 sig = 0;
                 for (int k = 0; k < N2; k++)
                     sig += (this.delta[k] * weights12[i, k]);
-                sig *= out1[i] * (1 - out1[i]) * alpha;
+                sig *= config.ActivationFunctionDerivative(out1[i], alpha);         //out1[i] * (1 - out1[i]) * alpha;
                 for (int j = 0; j < N0; j++) {
                     double old = weights01[j, i];
                     weights01[j, i] += eta * sig * out0[j] + momentum * old_weights01[j, i];
@@ -292,20 +302,21 @@ namespace diploma_neunet
             tf.StartPosition = FormStartPosition.CenterParent;
             tf.ShowDialog();
         }
-        public int Test(double[] inputData)
+        public string Test(double[] inputData)
         {
-            int res = 0;
+            //int res = 0;
             if (this.N0 != inputData.Length)
             {
                 System.Windows.Forms.MessageBox.Show("Wrong input test data!");
-                return -1;
+                return "";
             }
 
             for (int i = 0; i < this.N0; i++)
                 this.out0[i] = inputData[i];
             this.ForwardPass(false);
-            res = Array.IndexOf(this.output, this.output.Max<double>());
-            return res;
+            //res = Array.IndexOf(this.output, this.output.Max<double>());
+            //return res;
+            return this.output[0].ToString();
         }
 
         private void PreGenerateInputOutput()
@@ -317,7 +328,7 @@ namespace diploma_neunet
                 this.preOutput[i] = new double[N2];
 
                 for (int j = 0; j < N2; j++)
-                    this.preOutput[i][j] = ((j == i) ? 0.3 : -0.3);
+                    this.preOutput[i][j] = 0.8;  // ((j == i) ? 0.5 : -0.5);
             }
         }
         private void GenerateIntInput(int num)

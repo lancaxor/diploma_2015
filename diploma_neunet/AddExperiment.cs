@@ -13,8 +13,6 @@ namespace diploma_neunet
     {
         Experiment newExp;
         bool CanClose = false;
-        String ex;
-
         public AddExperiment(Experiment experiment)
         {
             InitializeComponent();

@@ -71,6 +71,7 @@ namespace NeuroNet_Hard
             //this.pictureBox1.Image = (Image)(bmp = new Bitmap(this.pictureBox1.Width, this.pictureBox1.Height));
             this.pictureBox1.Image = (Image)new Bitmap(this.pictureBox1.Width, this.pictureBox1.Height);
             bmp = new Bitmap(bsize, bsize);
+            this.bAuto = false;
         }
 
         private double[] PictureToInt()            //this.picture.image => int[]
@@ -93,7 +94,7 @@ namespace NeuroNet_Hard
 
         private void button2_Click(object sender, EventArgs e)          //recognize
         {
-            int result = this.net.Test(this.PictureToInt());
+            string result = this.net.Test(this.PictureToInt());
             MessageBox.Show(String.Format("Recognized: {0}", result));
         }
 

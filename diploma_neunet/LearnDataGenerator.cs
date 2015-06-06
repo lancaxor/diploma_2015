@@ -42,7 +42,7 @@ namespace diploma_neunet
             //TestForm(res);
             for (int y = 0, i = 0; y < size; y++)
                 for (int x = 0; x < size; x++, i++)
-                    data[i] = res.GetPixel(x, y).B > 127 ? -0.8: 0.8;
+                    data[i] = res.GetPixel(x, y).B > 127 ? -0.95: 0.95;
             return data;
         }
 

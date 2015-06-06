@@ -22,6 +22,13 @@ namespace diploma_neunet
             return (1.0 / (1.0 + Math.Exp(-1*alpha*input)));
         }
 
+        public static double SigmaDerivative(double input, double alpha)
+        {
+            double f = SigmaFunction(input, alpha);
+            double res = f * alpha * (1 - f);
+            return res;
+        }
+
         public static double LogisticFunction(double input, double alpha)
         {
             double K = 1.0;
@@ -36,11 +43,21 @@ namespace diploma_neunet
             return (input > 0 ? 0.9 : -0.9);
         }
 
-        public static double TahnFunction(double input)
+        public static double TahnFunction(double input, double alpha)
         {
             double a = 1.7159;
-            double b = 2/3;
+            double b = alpha;   //2.0 / 3.0;
             double res = a * Math.Tanh(input * b);
+            return res;
+        }
+
+        public static double TahnDerivative(double input)
+        {
+            double a = 1.7159;
+            double b = 2.0 / 3.0;
+
+            double t = Math.Cosh(input * b);
+            double res = a * b / (t * t);
             return res;
         }
 

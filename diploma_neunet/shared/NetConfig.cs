@@ -36,8 +36,16 @@ namespace diploma_neunet
             //var result = NeuronProp.RBF(input, parameter[0]);
             var result = NeuronProp.SigmaFunction(input, parameter[0]);
             //var result = NeuronProp.LogisticFunction(input, parameter[0]);
-            //var result = NeuronProp.TahnFunction(input);
+            //var result = NeuronProp.TahnFunction(input, parameter[0]);
             //var result = NeuronProp.BinaryFunction(input);
+            return result;
+        }
+
+        public double ActivationFunctionDerivative(double input, params double[] parameter)
+        {
+            var result = NeuronProp.SigmaDerivative(input, parameter[0]);
+            //var result = NeuronProp.TahnDerivative(input);
+
             return result;
         }
     }
