@@ -21,6 +21,7 @@ namespace NeuroNet_Hard
         int currInt = 0;
         bool bAuto = false;
         NeuNet net;
+        private const double minSig = 0, maxSig = 0.95;
 
         public TestFormPaint(NeuNet network)
         {
@@ -80,15 +81,13 @@ namespace NeuroNet_Hard
 
             double[] netIn = new double[this.bmp.Height * this.bmp.Width];
             Color c = new Color();
-            for (int i = 0; i < netIn.Length; i++)
-            {
-                int x = (int)i / bsize;
-                int y = ((int)(i / bsize) == 0 ? i : (int)(i % bsize));
-
-                //c = bmp.GetPixel((int)(i % this.bmp.Width), (int)(i / this.bmp.Width));
-                c = bmp.GetPixel(x, y);
-                netIn[i] = c.B > 127 ? -0.8 : 0.8;     //image is black-white => c.R = c.G = c.B
-            }
+            for(int y=0, i=0;y<bsize; y++)
+                for (int x = 0; x < bsize; x++, i++)
+                {
+                    //c = bmp.GetPixel((int)(i % this.bmp.Width), (int)(i / this.bmp.Width));
+                    c = bmp.GetPixel(x, y);
+                    netIn[i] = c.B > 127 ? minSig : maxSig;     //image is black-white => c.R = c.G = c.B
+                }
             return netIn;
         }
 

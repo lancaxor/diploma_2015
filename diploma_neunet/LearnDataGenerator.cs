@@ -13,6 +13,8 @@ namespace diploma_neunet
         private const int MaxNoise = 0;     // %
         private static int currNoise = 0;
 
+        private const double minSig = 0, maxSig = 0.95;
+
         public LearnDataGenerator()
         {
             r = new Random();
@@ -42,7 +44,8 @@ namespace diploma_neunet
             //TestForm(res);
             for (int y = 0, i = 0; y < size; y++)
                 for (int x = 0; x < size; x++, i++)
-                    data[i] = res.GetPixel(x, y).B > 127 ? -0.95: 0.95;
+                    data[i] = res.GetPixel(x, y).B > 127 ? minSig : maxSig;
+            //this.TestInput(data, size);
             return data;
         }
 
@@ -56,6 +59,18 @@ namespace diploma_neunet
             tf.Controls.Add(pc);
             tf.StartPosition = FormStartPosition.CenterParent;
             tf.ShowDialog();
+        }
+
+        private void TestInput(double[] data, int size)
+        {
+            Bitmap bmp = new Bitmap(size, size);
+             for (int y = 0, i = 0; y < size; y++)
+                 for (int x = 0; x < size; x++, i++)
+                 {
+                     int col = (data[i]) > 0.5 ? 0 : 255;
+                     bmp.SetPixel(x, y, Color.FromArgb(col, col, col));
+                 }
+             this.TestForm(bmp);
         }
     }
 }
