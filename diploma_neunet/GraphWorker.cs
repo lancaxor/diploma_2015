@@ -20,15 +20,23 @@ namespace diploma_neunet
 
         public void AddExperiment(Experiment exp)
         {
-            var n = (new Random()).Next(0, 100);
-            exp.name = "Serie" + n.ToString();
-            exp.time = n;
+            //var n = (new Random()).Next(0, 100);
+            //exp.name = "Serie" + n.ToString();
+            //exp.time = n;
 
-            var series = this.mainChart.Series.Add(exp.name);
-            series.Points.Add(exp.time);
+            if (exp.time == 0.0)
+                return;
+
+            var series = this.mainChart.Series.Add(exp.ToString());
+            series.Points.Add((float)exp.time);
             series.ChartType = SeriesChartType.Column;
             series.IsValueShownAsLabel = true;
             //this.mainChart.Series.Add(series);
+        }
+
+        public void ClearChart()
+        {
+            this.mainChart.Series.Clear();
         }
     }
 }

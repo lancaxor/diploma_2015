@@ -39,17 +39,17 @@
             // 
             chartArea1.Name = "ChartArea1";
             this.mainChart.ChartAreas.Add(chartArea1);
-            this.mainChart.Dock = System.Windows.Forms.DockStyle.Top;
+            this.mainChart.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Name = "Legend1";
             this.mainChart.Legends.Add(legend1);
             this.mainChart.Location = new System.Drawing.Point(0, 0);
-            this.mainChart.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.mainChart.Margin = new System.Windows.Forms.Padding(2);
             this.mainChart.Name = "mainChart";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.mainChart.Series.Add(series1);
-            this.mainChart.Size = new System.Drawing.Size(566, 366);
+            this.mainChart.Size = new System.Drawing.Size(566, 422);
             this.mainChart.TabIndex = 0;
             // 
             // GraphWorker
@@ -58,7 +58,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(566, 422);
             this.Controls.Add(this.mainChart);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "GraphWorker";
             this.Text = "GraphWorker";
             ((System.ComponentModel.ISupportInitialize)(this.mainChart)).EndInit();

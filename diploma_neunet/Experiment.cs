@@ -10,21 +10,24 @@ namespace diploma_neunet
     {
         public double time { get; set; }
         public string name { get; set; }
-        public List<NeuCoord> fixedNeurons { get; set; }
+        public List<int> fixedNeurons { get; set; }
 
+        public Experiment()
+        {
+            this.fixedNeurons = new List<int>();
+        }
         public override string ToString()
         {
             if (this.fixedNeurons.Count < 1) return this.name;
-            else if (this.fixedNeurons.Count == 1) return String.Format("{0} ({1}){2}", this.name, this.fixedNeurons[0], time > 0.0 ? " (" + time.ToString() + ")" : "");
+            //else if (this.fixedNeurons.Count == 1) return String.Format("{0} ({1}){2}", this.name, this.fixedNeurons[0], time > 0.0 ? " (" + time.ToString() + ")" : "");
 
             StringBuilder b = new StringBuilder(this.name);
-            b.Append(" (");
-            for (int i = 0; i < fixedNeurons.Count-1; i++)
-                b.Append(fixedNeurons[i].Layer + "." + fixedNeurons[i].Index + ", ");
-            b.Append(fixedNeurons[fixedNeurons.Count - 1].Layer + "." + fixedNeurons[fixedNeurons.Count - 1].Index);
-            b.Append(')');
-            if (this.time != 0.0)
-                b.Append(" (" + time.ToString() + ")");
+            //b.Append(" (");
+            //for (int i = 0; i < fixedNeurons.Count-1; i++)
+            //    b.Append(fixedNeurons[i]+ ", ");
+            //b.Append(fixedNeurons[fixedNeurons.Count - 1]);
+            //b.Append(')');
+            b.Append(String.Format(" ({0}s)", time));
             return b.ToString();
         }
     }

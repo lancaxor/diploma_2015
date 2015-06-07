@@ -28,7 +28,7 @@ namespace diploma_neunet
                 if (this.tbTitle.Text.Length == 0)
                     this.tbTitle.Text = String.Format("Fixed {0} neuron(s)", v.Count());
                 this.newExp.name = this.tbTitle.Text;
-                this.newExp.fixedNeurons = new List<NeuCoord>();
+                this.newExp.fixedNeurons = new List<int>();
 
                 CanClose = true;
             }

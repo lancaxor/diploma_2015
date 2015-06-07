@@ -12,7 +12,7 @@ namespace diploma_neunet
         int N0, N1, N2;     // num of neurons in input, hidden and output layers
         int era;
         const double alpha = 0.6667;       //parameter of sigmoida's HAKJlOH 0_o
-        double eta = 0.7;               //learning speed coeficient
+        const double maxEta = 0.7;               //learning speed coeficient
         const int NumOfInputs = 10;     //number of input symbols
         const double thresh = 0.0;        //threshold
         double momentum = 0.0;    //momentum constant (ischerpivausche, da? XD)
@@ -33,8 +33,9 @@ namespace diploma_neunet
         double avgErr;      //average error (for all iterations)
         double lastAvgError;  // last average error
         double currErr;     //current error in all neurons
+        double eta;
 
-        List<int> fxHidden, fxOut;
+        List<int> fxHidden;
 
         double[][] preInput;
         double[][] preOutput;
@@ -48,30 +49,35 @@ namespace diploma_neunet
         public int Epoch { get { return this.era; } }
         #endregion
 
-        public NeuNet()
+        public NeuNet(NetConfig Config)
         {
             r = new Random();
             learner = new LearnDataGenerator();
-            config = new NetConfig { maxEpoch = 3000, minError = 0.005, minErrorChange = 1E-9, NumInput = 784, NumHidden = 50, NumOutput = 10 };
+            this.config = Config;
                 //(100, 0.2, 0.0001);
 
             era = 0;
             this.N0 = config.NumInput;
             this.N1 = config.NumHidden;
             this.N2 = config.NumOutput;
+
+            fxHidden = new List<int>();             //hidden layer fixed
+            inputIndecies = new List<int>(N2);
         }
 
         #region Learning
         public TimeSpan LearnInt(MainForm parentForm)
         {
             int currInput, currIndex;
-            AllocMem();
-            InitWeights();
             this.parent = parentForm;
             this.era = 0;
             this.avgErr= int.MaxValue;
             this.currErr = 0;
             double currAbsErr = 0;
+            this.eta = maxEta;
+
+            this.AllocMem();
+            this.InitWeights();
             this.PreGenerateInputOutput();          //speed up, memory down
 
             DateTime start = DateTime.Now;
@@ -109,7 +115,7 @@ namespace diploma_neunet
                 this.era++;
                 currAbsErr = Math.Abs(this.avgErr);
                 this.eta /= 1.01;
-                this.parent.SetState(String.Format("Epoch: {0}; Error: {1}; Error changing: {2}", this.era, (float)currAbsErr, (float)(lastAvgError - avgErr)));
+                //this.parent.SetState(String.Format("Epoch: {0}; Error: {1}; Error changing: {2}", this.era, (float)currAbsErr, (float)(lastAvgError - avgErr)));
             } while (currAbsErr > config.minError &&
                 //this.error.Max<double>() > this.config.minError ||
                 Math.Abs(lastAvgError - avgErr) > config.minErrorChange &&
@@ -148,7 +154,42 @@ namespace diploma_neunet
             //this.TestOutputInput();
             return DateTime.Now - start;
         }
+        public bool Fix(int hiddenNeuronIndex)
+        {
+            if (hiddenNeuronIndex > (this.N1 - 1))
+                return false;
+            this.fxHidden.Add(hiddenNeuronIndex);
+            return true;
+        }
 
+        public bool Fix(List<int> fixedNeuronsIndecies)
+        {
+            foreach (var i in fixedNeuronsIndecies)
+            {
+                if (i > (this.N1 - 1))
+                    return false;
+                this.fxHidden.Add(i);
+            }
+            return true;
+        }
+
+        public bool Unfix(int hiddenNeuronIndex)
+        {
+            if (hiddenNeuronIndex > (this.N1 - 1) || !this.fxHidden.Contains(hiddenNeuronIndex))
+                return false;
+            this.fxHidden.Remove(hiddenNeuronIndex);
+            return true;
+        }
+        public bool Unfix()
+        {
+            this.fxHidden.Clear();
+            return true;
+        }
+
+        public bool IsFixed(int index)
+        {
+            return this.fxHidden.Contains(index);
+        }
         private void ForwardPass(bool learning = true)
         {
             double currNeuWeight;
@@ -181,8 +222,6 @@ namespace diploma_neunet
 
             for (int i = 0; i < N2; i++)        //output => hidden layer
             {
-                if (fxOut.Contains(i))      //out neuron with index j is fixed //slow down!
-                    continue;
                 sig = config.ActivationFunctionDerivative(output[i], alpha) * (correct[i] - output[i]);
                 this.delta[i] = sig;
                 for (int j = 0; j < N1; j++)
@@ -245,10 +284,6 @@ namespace diploma_neunet
             this.delta = new double[N2];    // Math.Max(N2, N1)];
             this.preInput = new double[NumOfInputs][];
             this.preOutput = new double[NumOfInputs][];
-
-            fxHidden = new List<int>();             //hidden layer fixed
-            fxOut = new List<int>();                //output layer fixed;
-            inputIndecies = new List<int>(N2);
         }
 
         private void TestOutputInput()
@@ -359,11 +394,12 @@ namespace diploma_neunet
 
             for (int i = 0; i < N0; i++)
                 for (int j = 0; j < N1; j++)
-                    this.weights01[i, j] = d1 * (r.NextDouble() * 2 - 1);         // -0.05...0.05
+                    if (!this.fxHidden.Contains(j))
+                        this.weights01[i, j] = d1 * (r.NextDouble() * 2 - 1);
 
             for (int i = 0; i < N1; i++)
                 for (int j = 0; j < N2; j++)
-                    this.weights12[i, j] = d2 * (r.NextDouble() * 2 - 1);         //-0.05...0.05
+                    this.weights12[i, j] = d2 * (r.NextDouble() * 2 - 1);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace diploma_neunet
 {
-    class NetConfig
+    public class NetConfig
     {
         public NetConfig()
         {
