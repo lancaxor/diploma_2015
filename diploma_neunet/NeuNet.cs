@@ -52,7 +52,7 @@ namespace diploma_neunet
         {
             r = new Random();
             learner = new LearnDataGenerator();
-            config = new NetConfig { maxEpoch = 3000, minError = 0.0007, minErrorChange = 1E-9, NumInput = 784, NumHidden = 150, NumOutput = 1 };
+            config = new NetConfig { maxEpoch = 3000, minError = 0.005, minErrorChange = 1E-9, NumInput = 784, NumHidden = 50, NumOutput = 10 };
                 //(100, 0.2, 0.0001);
 
             era = 0;
@@ -62,7 +62,6 @@ namespace diploma_neunet
         }
 
         #region Learning
-        string junk = string.Empty;
         public TimeSpan LearnInt(MainForm parentForm)
         {
             int currInput, currIndex;
@@ -225,6 +224,7 @@ namespace diploma_neunet
                 var e = this.error[i];
                 res += e*e;
             }
+            
             res *= 0.5;
             return res;
         }
@@ -315,14 +315,15 @@ namespace diploma_neunet
             for (int i = 0; i < this.N0; i++)
                 this.out0[i] = inputData[i];
             this.ForwardPass(false);
-            //res = Array.IndexOf(this.output, this.output.Max<double>());
-            //return res;
 
             int resInt = (int)(output[0] * 10.0);
-            if (Math.Abs((double)resInt / 10.0 - output[0]) > 0.7)     //if output = 0.9 => resInt = 1.0
+            if (Math.Abs((double)resInt - output[0]*10.0) > 0.7)     //if output = 0.9 => resInt = 1.0
                 resInt++;
 
-            string res = String.Format("{0}\n", resInt);
+            string res = Array.IndexOf(this.output, this.output.Max<double>()).ToString();
+            //string res = String.Format("{0} ({1})\n", output[0], resInt);
+            //for (int i = 0; i < this.N2; i++)
+                //res += "\n" + this.output[i].ToString();
             return res;
         }
 
@@ -335,7 +336,7 @@ namespace diploma_neunet
                 this.preOutput[i] = new double[N2];
 
                 for (int j = 0; j < N2; j++)
-                    this.preOutput[i][j] = i / 10.0;//((j == i) ? 0.9 : 0.1);      //((j%2 == 0 ? 0.9 : 0.1));
+                    this.preOutput[i][j] = ((j == i) ? 0.9 : 0.1);  //i / 10.0;
             }
         }
         private void GenerateIntInput(int num)
