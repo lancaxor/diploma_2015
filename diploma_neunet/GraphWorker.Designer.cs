@@ -61,6 +61,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "GraphWorker";
             this.Text = "GraphWorker";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GraphWorker_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.mainChart)).EndInit();
             this.ResumeLayout(false);
 

@@ -24,11 +24,11 @@ namespace diploma_neunet
             //exp.name = "Serie" + n.ToString();
             //exp.time = n;
 
-            if (exp.time == 0.0)
+            if (exp.data.seconds == 0.0)
                 return;
 
             var series = this.mainChart.Series.Add(exp.ToString());
-            series.Points.Add((float)exp.time);
+            series.Points.Add((float)exp.data.seconds);
             series.ChartType = SeriesChartType.Column;
             series.IsValueShownAsLabel = true;
             //this.mainChart.Series.Add(series);
@@ -37,6 +37,12 @@ namespace diploma_neunet
         public void ClearChart()
         {
             this.mainChart.Series.Clear();
+        }
+
+        private void GraphWorker_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
         }
     }
 }

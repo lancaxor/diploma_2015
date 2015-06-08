@@ -66,7 +66,7 @@ namespace diploma_neunet
         }
 
         #region Learning
-        public TimeSpan LearnInt(MainForm parentForm)
+        public NetData LearnInt(MainForm parentForm)
         {
             int currInput, currIndex;
             this.parent = parentForm;
@@ -81,6 +81,7 @@ namespace diploma_neunet
             this.PreGenerateInputOutput();          //speed up, memory down
 
             DateTime start = DateTime.Now;
+            NetData data = NetData.Empty;
             
             do
             {
@@ -152,7 +153,13 @@ namespace diploma_neunet
             
             //MessageBox.Show("Testing time!!!");
             //this.TestOutputInput();
-            return DateTime.Now - start;
+
+            data.time = DateTime.Now.Subtract(start);
+            data.avgErr = this.avgErr;
+            data.epoch = this.Epoch;
+            data.errChange = this.lastAvgError - this.avgErr;
+
+            return data;
         }
         public bool Fix(int hiddenNeuronIndex)
         {

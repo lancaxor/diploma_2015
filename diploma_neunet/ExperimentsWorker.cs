@@ -30,7 +30,7 @@ namespace diploma_neunet
 
         public void Add(Experiment experiment)
         {
-            this.exps.Add(new Experiment { fixedNeurons = experiment.fixedNeurons, time = experiment.time, name = experiment.name });
+            this.exps.Add(new Experiment { fixedNeurons = experiment.fixedNeurons, data = experiment.data, name = experiment.name });
         }
 
         public void Clear()

@@ -73,24 +73,36 @@ namespace diploma_neunet
         private void DoFullLearning()
         {
             Random rand = new Random();
-            var timeForCurrentCount = new List<TimeSpan>();
+            var dataForCurrentCount = new List<NetData>();
+            NetData avgData = NetData.Empty;
+
             int candidate=0;
-            double avgTime = 0.0;
 
             for (int n = 0; n<AttemptsOnCurrentIndex; n++)      //for 0 fixed neurons
             {
                 this.SetState(n + 1);
-                timeForCurrentCount.Add(this.net.LearnInt(this));
+                dataForCurrentCount.Add(this.net.LearnInt(this));
             }
-            foreach (var t in timeForCurrentCount)
-                avgTime+=t.TotalSeconds;
-            avgTime /= timeForCurrentCount.Count;
-            timeForCurrentCount.Clear();
-            this.graph.AddExperiment(new Experiment { fixedNeurons = new List<int>(0), name = "Unfixed", time = avgTime });
+            foreach (var t in dataForCurrentCount)
+            {
+                avgData.time += t.time;
+                avgData.epoch += t.epoch;
+                avgData.errChange += t.errChange;
+                avgData.avgErr += t.avgErr;
+            }
+
+            avgData.avgErr /= dataForCurrentCount.Count;
+            avgData.epoch /= dataForCurrentCount.Count;
+            avgData.errChange /= dataForCurrentCount.Count;
+            avgData.seconds = avgData.time.TotalSeconds / dataForCurrentCount.Count;
+
+            dataForCurrentCount.Clear();
+            this.graph.AddExperiment(new Experiment { fixedNeurons = new List<int>(0), name = "Unfixed", data = avgData });
+            avgData = NetData.Empty;
 
             for (int i = 1; i <= MaxFixedCount; i++)         //fixed neurons
             {
-                avgTime = 0.0;
+                avgData = NetData.Empty;
                 var exp = new Experiment();
                 exp.name = String.Format("Fixed count: {0}", i);
                 exp.fixedNeurons = new List<int>();
@@ -115,16 +127,26 @@ namespace diploma_neunet
                         this.SetState(i, exp.fixedNeurons, j + 1, k + 1);
                         this.net.LearnInt(this);
                         this.net.Fix(exp.fixedNeurons);
-                        timeForCurrentCount.Add(this.net.LearnInt(this));
+                        dataForCurrentCount.Add(this.net.LearnInt(this));
+                        this.net.Unfix();
                     }
-                    this.net.Unfix();
                 }
 
-                foreach (var t in timeForCurrentCount)
-                    avgTime += t.TotalSeconds;
-                avgTime /= timeForCurrentCount.Count;
-                timeForCurrentCount.Clear();
-                exp.time = avgTime;
+                foreach (var t in dataForCurrentCount)
+                {
+                    avgData.time += t.time;
+                    avgData.epoch += t.epoch;
+                    avgData.errChange += t.errChange;
+                    avgData.avgErr += t.avgErr;
+                }
+
+                avgData.avgErr /= dataForCurrentCount.Count;
+                avgData.epoch /= dataForCurrentCount.Count;
+                avgData.errChange /= dataForCurrentCount.Count;
+                avgData.seconds = avgData.time.TotalSeconds / dataForCurrentCount.Count;
+
+                dataForCurrentCount.Clear();
+                exp.data = avgData;
                 graph.AddExperiment(exp);
             }
         }

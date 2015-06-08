@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="LearnDataGenerator.cs" />
     <Compile Include="shared\NetConfig.cs" />
+    <Compile Include="shared\NetData.cs" />
     <Compile Include="shared\NeuronProp.cs" />
     <Compile Include="TestFormPaint.cs">
       <SubType>Form</SubType>
