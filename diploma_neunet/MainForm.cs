@@ -25,12 +25,14 @@ namespace diploma_neunet
         bool clearChart = false;
         int AttemptsOnCurrentIndex = 3;           // we fixed some neuron and learn network some times with this fixed neuron
         int AttemptsOnCurrentCount = 3;           // we selected number of fixed neurons, but index is selected randomly. this const describe, how many times will ve select fixed index
+        int MinFixedCount = 0;                   // max number of fixed neurons
         int MaxFixedCount = 10;                   // max number of fixed neurons
         //total = AttemptsOnCurrentIndex * AttemptsOnCurrentCount * MaxFixedCount times we will learn out NeuNet.
 
         public MainForm()
         {
             InitializeComponent();
+            this.tbStatus.ScrollBars = RichTextBoxScrollBars.ForcedHorizontal;
             this.clbExperiments.CheckOnClick = false;
             config  = new NetConfig { maxEpoch = 3000, minError = 0.005, minErrorChange = 1E-9, NumInput = 784, NumHidden = 50, NumOutput = 10 };
             net = new NeuNet(config);
@@ -84,30 +86,32 @@ namespace diploma_neunet
             NetData avgData = NetData.Empty;
 
             int candidate=0;
-
-            for (int n = 0; n<AttemptsOnCurrentIndex; n++)      //for 0 fixed neurons
+            if (this.MinFixedCount == 0)            //for 0 fixed neurons
             {
-                this.SetState(n + 1);
-                dataForCurrentCount.Add(this.net.LearnInt(this));
+                for (int n = 0; n < AttemptsOnCurrentIndex; n++)
+                {
+                    this.SetState(n + 1);
+                    dataForCurrentCount.Add(this.net.LearnInt(this));
+                }
+                foreach (var t in dataForCurrentCount)
+                {
+                    avgData.time += t.time;
+                    avgData.epoch += t.epoch;
+                    avgData.errChange += t.errChange;
+                    avgData.avgErr += t.avgErr;
+                }
+
+                avgData.avgErr /= dataForCurrentCount.Count;
+                avgData.epoch /= dataForCurrentCount.Count;
+                avgData.errChange /= dataForCurrentCount.Count;
+                avgData.seconds = avgData.time.TotalSeconds / dataForCurrentCount.Count;
+
+                dataForCurrentCount.Clear();
+                this.graph.AddExperiment(new Experiment { fixedNeurons = new List<int>(0), name = "Unfixed", data = avgData });
+                avgData = NetData.Empty;
             }
-            foreach (var t in dataForCurrentCount)
-            {
-                avgData.time += t.time;
-                avgData.epoch += t.epoch;
-                avgData.errChange += t.errChange;
-                avgData.avgErr += t.avgErr;
-            }
 
-            avgData.avgErr /= dataForCurrentCount.Count;
-            avgData.epoch /= dataForCurrentCount.Count;
-            avgData.errChange /= dataForCurrentCount.Count;
-            avgData.seconds = avgData.time.TotalSeconds / dataForCurrentCount.Count;
-
-            dataForCurrentCount.Clear();
-            this.graph.AddExperiment(new Experiment { fixedNeurons = new List<int>(0), name = "Unfixed", data = avgData });
-            avgData = NetData.Empty;
-
-            for (int i = 1; i <= MaxFixedCount; i++)         //fixed neurons
+            for (int i = MinFixedCount == 0 ? 1 : MinFixedCount; i <= MaxFixedCount; i++)         //fixed neurons
             {
                 avgData = NetData.Empty;
                 var exp = new Experiment();
@@ -317,7 +321,7 @@ namespace diploma_neunet
                     this.DoStop();
                     return;
                 }
-                this.getData.GetData(out this.MaxFixedCount, out this.AttemptsOnCurrentCount, out this.AttemptsOnCurrentIndex);
+                this.getData.GetData(out this.MinFixedCount, out this.MaxFixedCount, out this.AttemptsOnCurrentCount, out this.AttemptsOnCurrentIndex);
                 
                 this.btnAutoLearn.Text = "Stop";
                 this.btnLearn.Enabled = false;

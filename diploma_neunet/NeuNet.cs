@@ -354,6 +354,9 @@ namespace diploma_neunet
                 return "";
             }
 
+            if (this.out1 == null)
+                return "Network has not been learned.";
+
             for (int i = 0; i < this.N0; i++)
                 this.out0[i] = inputData[i];
             this.ForwardPass(false);

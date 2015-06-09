@@ -19,8 +19,8 @@ namespace diploma_neunet
         }
         public override string ToString()
         {
-            StringBuilder b = new StringBuilder(this.name);            
-            b.Append(String.Format(" ({0}s, {1} epoch, err={2}, err.change={3})", data.seconds, data.epoch, (float)data.avgErr, (float)data.errChange));
+            StringBuilder b = new StringBuilder(this.name);
+            b.Append(String.Format(" ({0}s, {1} epoch, err={2}, err.change={3})", data.seconds.ToString("0.000"), data.epoch, data.avgErr.ToString("0.00000"), data.errChange.ToString("0.00000")));
             return b.ToString();
         }
     }

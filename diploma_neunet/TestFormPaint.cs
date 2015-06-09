@@ -93,7 +93,12 @@ namespace NeuroNet_Hard
 
         private void button2_Click(object sender, EventArgs e)          //recognize
         {
+            int tmp;
             string result = this.net.Test(this.PictureToInt());
+            if(!Int32.TryParse(result, out tmp)){
+                MessageBox.Show(String.Format("Error while recognizing: {0}", result));
+                return;
+            }
             MessageBox.Show(String.Format("Recognized: {0}", result));
         }
 

@@ -11,7 +11,7 @@ namespace diploma_neunet
 {
     public partial class GetDataForAutoLearning : Form
     {
-        int maxFixed, maxPass, maxAtt;
+        int minFixed, maxFixed, maxPass, maxAtt;
         public GetDataForAutoLearning()
         {
             InitializeComponent();
@@ -19,8 +19,10 @@ namespace diploma_neunet
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (!(Int32.TryParse(this.tbMaxFixed.Text, out maxFixed) && Int32.TryParse(this.tbMaxAtt.Text, out maxAtt) && Int32.TryParse(this.tbMaxPass.Text, out maxPass)))
-                MessageBox.Show("Bad values entered! Enter integer.");
+            if (!(Int32.TryParse(this.tbMinFixed.Text, out minFixed) && Int32.TryParse(this.tbMaxFixed.Text, out maxFixed) && Int32.TryParse(this.tbMaxAtt.Text, out maxAtt) && Int32.TryParse(this.tbMaxPass.Text, out maxPass)))
+                MessageBox.Show("Bad values entered! Enter integers.");
+            else if(this.minFixed>this.maxFixed)
+                MessageBox.Show("Min value canot be more then Max value.");
             else
                 this.Close();
         }
@@ -30,7 +32,8 @@ namespace diploma_neunet
             this.Close();
         }
 
-        public void GetData (out int MaxFixed, out int MaxPasses, out int MaxAttemptions){
+        public void GetData (out int MinFixed, out int MaxFixed, out int MaxPasses, out int MaxAttemptions){
+            MinFixed = this.minFixed;
             MaxFixed = this.maxFixed;
             MaxPasses = this.maxPass;
             MaxAttemptions = this.maxAtt;

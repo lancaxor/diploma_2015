@@ -33,18 +33,18 @@
             this.lblStText = new System.Windows.Forms.Label();
             this.btnGraph = new System.Windows.Forms.Button();
             this.clbExperiments = new System.Windows.Forms.CheckedListBox();
-            this.tbStatus = new System.Windows.Forms.TextBox();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnTest = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnLearn = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.cbClearChart = new System.Windows.Forms.CheckBox();
+            this.tbStatus = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // btnAutoLearn
             // 
-            this.btnAutoLearn.Location = new System.Drawing.Point(243, 292);
+            this.btnAutoLearn.Location = new System.Drawing.Point(243, 310);
             this.btnAutoLearn.Margin = new System.Windows.Forms.Padding(2);
             this.btnAutoLearn.Name = "btnAutoLearn";
             this.btnAutoLearn.Size = new System.Drawing.Size(64, 20);
@@ -76,7 +76,7 @@
             // 
             // btnGraph
             // 
-            this.btnGraph.Location = new System.Drawing.Point(175, 292);
+            this.btnGraph.Location = new System.Drawing.Point(175, 310);
             this.btnGraph.Margin = new System.Windows.Forms.Padding(2);
             this.btnGraph.Name = "btnGraph";
             this.btnGraph.Size = new System.Drawing.Size(64, 20);
@@ -94,16 +94,6 @@
             this.clbExperiments.Size = new System.Drawing.Size(364, 244);
             this.clbExperiments.TabIndex = 6;
             // 
-            // tbStatus
-            // 
-            this.tbStatus.Enabled = false;
-            this.tbStatus.Location = new System.Drawing.Point(52, 268);
-            this.tbStatus.Margin = new System.Windows.Forms.Padding(2);
-            this.tbStatus.Name = "tbStatus";
-            this.tbStatus.Size = new System.Drawing.Size(391, 20);
-            this.tbStatus.TabIndex = 7;
-            this.tbStatus.Text = "Ready";
-            // 
             // btnAdd
             // 
             this.btnAdd.Location = new System.Drawing.Point(379, 11);
@@ -117,7 +107,7 @@
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(107, 292);
+            this.btnTest.Location = new System.Drawing.Point(107, 310);
             this.btnTest.Margin = new System.Windows.Forms.Padding(2);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(64, 20);
@@ -128,7 +118,7 @@
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(379, 292);
+            this.btnExit.Location = new System.Drawing.Point(379, 310);
             this.btnExit.Margin = new System.Windows.Forms.Padding(2);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(64, 20);
@@ -139,7 +129,7 @@
             // 
             // btnLearn
             // 
-            this.btnLearn.Location = new System.Drawing.Point(311, 292);
+            this.btnLearn.Location = new System.Drawing.Point(311, 310);
             this.btnLearn.Margin = new System.Windows.Forms.Padding(2);
             this.btnLearn.Name = "btnLearn";
             this.btnLearn.Size = new System.Drawing.Size(64, 20);
@@ -162,7 +152,7 @@
             // cbClearChart
             // 
             this.cbClearChart.AutoSize = true;
-            this.cbClearChart.Location = new System.Drawing.Point(12, 295);
+            this.cbClearChart.Location = new System.Drawing.Point(12, 313);
             this.cbClearChart.Name = "cbClearChart";
             this.cbClearChart.Size = new System.Drawing.Size(78, 17);
             this.cbClearChart.TabIndex = 9;
@@ -170,15 +160,26 @@
             this.cbClearChart.UseVisualStyleBackColor = true;
             this.cbClearChart.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // tbStatus
+            // 
+            this.tbStatus.Location = new System.Drawing.Point(70, 268);
+            this.tbStatus.Name = "tbStatus";
+            this.tbStatus.ReadOnly = true;
+            this.tbStatus.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedHorizontal;
+            this.tbStatus.Size = new System.Drawing.Size(373, 37);
+            this.tbStatus.TabIndex = 10;
+            this.tbStatus.Text = "Ready";
+            this.tbStatus.WordWrap = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 327);
+            this.ClientSize = new System.Drawing.Size(454, 339);
+            this.Controls.Add(this.tbStatus);
             this.Controls.Add(this.cbClearChart);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnAdd);
-            this.Controls.Add(this.tbStatus);
             this.Controls.Add(this.clbExperiments);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnGraph);
@@ -204,13 +205,13 @@
         private System.Windows.Forms.Label lblStText;
         private System.Windows.Forms.Button btnGraph;
         private System.Windows.Forms.CheckedListBox clbExperiments;
-        private System.Windows.Forms.TextBox tbStatus;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnLearn;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.CheckBox cbClearChart;
+        private System.Windows.Forms.RichTextBox tbStatus;
 
     }
 }
