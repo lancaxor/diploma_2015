@@ -23,5 +23,21 @@ namespace diploma_neunet
             b.Append(String.Format(" ({0}s, {1} epoch, err={2}, err.change={3})", data.seconds.ToString("0.000"), data.epoch, data.avgErr.ToString("0.00000"), data.errChange.ToString("0.00000")));
             return b.ToString();
         }
+        public string ToExtendedString()
+        {
+            StringBuilder b = new StringBuilder(this.name+" fixed = [");
+
+            if (fixedNeurons.Count > 0)
+                fixedNeurons.Sort();
+
+            for (int i = 0; i < fixedNeurons.Count - 1; i++)
+                b.AppendFormat("{0}, ", fixedNeurons[i]);
+            if (fixedNeurons.Count > 0)
+                b.AppendFormat("{0}], ", fixedNeurons[fixedNeurons.Count - 1]);
+            else b.Append("], ");
+
+            b.AppendFormat("average time = {0}s, average epoch = {1}, average error = {2}, average error change = {3}", data.seconds, data.epoch, data.avgErr, data.errChange);
+            return b.ToString();
+        }
     }
 }

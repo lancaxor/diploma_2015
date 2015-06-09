@@ -21,6 +21,7 @@ namespace diploma_neunet
         Boolean running;
         NetConfig config;
         GetDataForAutoLearning getData;
+        Logger logger;
 
         bool clearChart = false;
         int AttemptsOnCurrentIndex = 3;           // we fixed some neuron and learn network some times with this fixed neuron
@@ -41,6 +42,7 @@ namespace diploma_neunet
             getData = new GetDataForAutoLearning();
             learner = new Thread(new ThreadStart(this.Learn));
             running = false;
+            logger = new Logger();
         }
         private void Learn()
         {
@@ -55,11 +57,15 @@ namespace diploma_neunet
                     MessageBox.Show("No experiments in Experiment List. Press Add button for creating Experiment.");
                     return;
                 }
+                this.SetState("Preparing...");
                 this.running = true;
                 this.btnAutoLearn.Enabled = false;
                 this.btnLearn.Text = "Stop";
                 if (this.clearChart) this.graph.ClearChart();
+
+                this.logger.Start();
                 this.DoBatchLearning();
+
                 MessageBox.Show("All experiments has been ended successfully. Press Graph button for chart viewing.");
             }
             this.DoStop();
@@ -107,7 +113,12 @@ namespace diploma_neunet
                 avgData.seconds = avgData.time.TotalSeconds / dataForCurrentCount.Count;
 
                 dataForCurrentCount.Clear();
-                this.graph.AddExperiment(new Experiment { fixedNeurons = new List<int>(0), name = "Unfixed", data = avgData });
+
+                var e = new Experiment { fixedNeurons = new List<int>(0), name = "Unfixed", data = avgData };
+                this.graph.AddExperiment(e);
+                if (logger.isRunning)
+                    logger.Log(e.ToExtendedString());
+
                 avgData = NetData.Empty;
             }
 
@@ -127,7 +138,7 @@ namespace diploma_neunet
                     {
                         do
                             candidate = rand.Next(0, this.config.NumHidden);
-                        while (this.net.IsFixed(candidate));                //check if candidate has not been fixed
+                        while (exp.fixedNeurons.Count(x => x == candidate) > 0);                //check if candidate has not been fixed
 
                         //this.net.Fix(candidate);
                         exp.fixedNeurons.Add(candidate);
@@ -165,6 +176,9 @@ namespace diploma_neunet
                 dataForCurrentCount.Clear();
                 exp.data = avgData;
                 graph.AddExperiment(exp);
+
+                if (logger.isRunning)
+                    logger.Log(exp.ToExtendedString());
             }
         }
         private void DoBatchLearning()
@@ -203,6 +217,9 @@ namespace diploma_neunet
                 this.exps[i].data = avgData;
                 this.clbExperiments.SetItemChecked(i, true);
                 graph.AddExperiment(this.exps[i]);
+
+                if (logger.isRunning)
+                    logger.Log(exps[i].ToExtendedString());
             }
         }
         private void DoStop()
@@ -212,6 +229,9 @@ namespace diploma_neunet
             this.btnLearn.Enabled = true;
             this.btnAutoLearn.Enabled = true;
             this.running = false;
+            if (this.logger.isRunning)
+                this.logger.Stop();
+            this.SetState("Ready");
         }
 
         private void AddExperiment_Click(object sender, EventArgs e)
@@ -314,6 +334,7 @@ namespace diploma_neunet
         {
             if (!this.running)
             {
+                this.SetState("Preparing...");
                 this.running = true;
                 this.getData.StartPosition = FormStartPosition.CenterParent;
                 if (this.getData.ShowDialog() != DialogResult.OK)
@@ -327,6 +348,8 @@ namespace diploma_neunet
                 this.btnLearn.Enabled = false;
 
                 if (this.clearChart) this.graph.ClearChart();
+
+                this.logger.Start();
                 this.DoFullLearning();
                 MessageBox.Show("All experiments has been ended successfully. Press Graph button for chart viewing.");
             }
