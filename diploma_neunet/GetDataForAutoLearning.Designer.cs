@@ -147,6 +147,7 @@
             this.Controls.Add(this.label1);
             this.Name = "GetDataForAutoLearning";
             this.Text = "GetDataForAutoLearning";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GetDataForAutoLearning_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

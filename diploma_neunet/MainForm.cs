@@ -39,7 +39,7 @@ namespace diploma_neunet
             net = new NeuNet(config);
             exps = new ExperimentsWorker();
             graph = new GraphWorker();
-            getData = new GetDataForAutoLearning();
+            getData = new GetDataForAutoLearning(this.config);
             learner = new Thread(new ThreadStart(this.Learn));
             running = false;
             logger = new Logger();
