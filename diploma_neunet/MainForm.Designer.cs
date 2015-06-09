@@ -39,23 +39,24 @@
             this.btnExit = new System.Windows.Forms.Button();
             this.btnLearn = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.cbClearChart = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnAutoLearn
             // 
             this.btnAutoLearn.Location = new System.Drawing.Point(243, 292);
-            this.btnAutoLearn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAutoLearn.Margin = new System.Windows.Forms.Padding(2);
             this.btnAutoLearn.Name = "btnAutoLearn";
             this.btnAutoLearn.Size = new System.Drawing.Size(64, 20);
             this.btnAutoLearn.TabIndex = 1;
             this.btnAutoLearn.Text = "AutoLearn";
             this.btnAutoLearn.UseVisualStyleBackColor = true;
-            this.btnAutoLearn.Click += new System.EventHandler(this.btnLearn_Click_1);
+            this.btnAutoLearn.Click += new System.EventHandler(this.btnAutoLearn_Click);
             // 
             // btnClear
             // 
             this.btnClear.Location = new System.Drawing.Point(379, 59);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(2);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(64, 20);
             this.btnClear.TabIndex = 2;
@@ -76,7 +77,7 @@
             // btnGraph
             // 
             this.btnGraph.Location = new System.Drawing.Point(175, 292);
-            this.btnGraph.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnGraph.Margin = new System.Windows.Forms.Padding(2);
             this.btnGraph.Name = "btnGraph";
             this.btnGraph.Size = new System.Drawing.Size(64, 20);
             this.btnGraph.TabIndex = 5;
@@ -88,7 +89,7 @@
             // 
             this.clbExperiments.FormattingEnabled = true;
             this.clbExperiments.Location = new System.Drawing.Point(11, 10);
-            this.clbExperiments.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.clbExperiments.Margin = new System.Windows.Forms.Padding(2);
             this.clbExperiments.Name = "clbExperiments";
             this.clbExperiments.Size = new System.Drawing.Size(364, 244);
             this.clbExperiments.TabIndex = 6;
@@ -97,7 +98,7 @@
             // 
             this.tbStatus.Enabled = false;
             this.tbStatus.Location = new System.Drawing.Point(52, 268);
-            this.tbStatus.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbStatus.Margin = new System.Windows.Forms.Padding(2);
             this.tbStatus.Name = "tbStatus";
             this.tbStatus.Size = new System.Drawing.Size(391, 20);
             this.tbStatus.TabIndex = 7;
@@ -106,7 +107,7 @@
             // btnAdd
             // 
             this.btnAdd.Location = new System.Drawing.Point(379, 11);
-            this.btnAdd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAdd.Margin = new System.Windows.Forms.Padding(2);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(64, 20);
             this.btnAdd.TabIndex = 8;
@@ -117,7 +118,7 @@
             // btnTest
             // 
             this.btnTest.Location = new System.Drawing.Point(107, 292);
-            this.btnTest.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(2);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(64, 20);
             this.btnTest.TabIndex = 5;
@@ -158,11 +159,23 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.button2_Click);
             // 
+            // cbClearChart
+            // 
+            this.cbClearChart.AutoSize = true;
+            this.cbClearChart.Location = new System.Drawing.Point(12, 295);
+            this.cbClearChart.Name = "cbClearChart";
+            this.cbClearChart.Size = new System.Drawing.Size(78, 17);
+            this.cbClearChart.TabIndex = 9;
+            this.cbClearChart.Text = "Clear Chart";
+            this.cbClearChart.UseVisualStyleBackColor = true;
+            this.cbClearChart.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 327);
+            this.Controls.Add(this.cbClearChart);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.tbStatus);
@@ -175,7 +188,7 @@
             this.Controls.Add(this.btnLearn);
             this.Controls.Add(this.btnAutoLearn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Genetic Learn";
@@ -197,6 +210,7 @@
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnLearn;
         private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.CheckBox cbClearChart;
 
     }
 }

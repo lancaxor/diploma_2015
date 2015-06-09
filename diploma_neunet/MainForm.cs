@@ -18,11 +18,11 @@ namespace diploma_neunet
         AddExperiment addexp;
         ExperimentsWorker exps;
         GraphWorker graph;
-        TimeSpan learnTime;
         Boolean running;
         NetConfig config;
         GetDataForAutoLearning getData;
 
+        bool clearChart = false;
         int AttemptsOnCurrentIndex = 3;           // we fixed some neuron and learn network some times with this fixed neuron
         int AttemptsOnCurrentCount = 3;           // we selected number of fixed neurons, but index is selected randomly. this const describe, how many times will ve select fixed index
         int MaxFixedCount = 10;                   // max number of fixed neurons
@@ -48,10 +48,17 @@ namespace diploma_neunet
         {
             if (!this.running)
             {
+                if (this.clbExperiments.Items.Count < 1)
+                {
+                    MessageBox.Show("No experiments in Experiment List. Press Add button for creating Experiment.");
+                    return;
+                }
                 this.running = true;
-                this.btnAutoLearn.Text = "Stop";
-                this.DoFullLearning();
-                //MessageBox.Show(String.Format("Time elapsed: {0}:{1}:{2}.{3}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds));
+                this.btnAutoLearn.Enabled = false;
+                this.btnLearn.Text = "Stop";
+                if (this.clearChart) this.graph.ClearChart();
+                this.DoBatchLearning();
+                MessageBox.Show("All experiments has been ended successfully. Press Graph button for chart viewing.");
             }
             this.DoStop();
 
@@ -124,6 +131,12 @@ namespace diploma_neunet
 
                     for (int k = 0; k < AttemptsOnCurrentIndex; k++)        //on current fixed index
                     {
+                        if (!this.running)
+                        {
+                            this.DoStop();
+                            return;
+                        }
+
                         this.SetState(i, exp.fixedNeurons, j + 1, k + 1);
                         this.net.LearnInt(this);
                         this.net.Fix(exp.fixedNeurons);
@@ -150,6 +163,44 @@ namespace diploma_neunet
                 graph.AddExperiment(exp);
             }
         }
+        private void DoBatchLearning()
+        {
+            for (int i = 0; i < this.exps.Count; i++)
+            {
+                if (this.clbExperiments.GetItemChecked(i))      //user can check it manually for skipping
+                    continue;
+
+                var allData = new List<NetData>();
+                NetData avgData = NetData.Empty;
+
+                this.clbExperiments.SelectedIndex = i;
+
+                for (int j = 0; j < this.exps[i].repeats; j++)
+                {
+                    this.SetState(j + 1, this.exps[i].repeats, i + 1, this.exps.Count, this.exps[i].fixedNeurons);
+                    this.net.LearnInt(this);
+                    this.net.Fix(this.exps[i].fixedNeurons);
+                    allData.Add(this.net.LearnInt(this));
+                    this.net.Unfix();
+                }
+
+                foreach (var t in allData)
+                {
+                    avgData.time += t.time;
+                    avgData.epoch += t.epoch;
+                    avgData.errChange += t.errChange;
+                    avgData.avgErr += t.avgErr;
+                }
+                avgData.avgErr /= allData.Count;
+                avgData.epoch /= allData.Count;
+                avgData.errChange /= allData.Count;
+                avgData.seconds = avgData.time.TotalSeconds / allData.Count;
+
+                this.exps[i].data = avgData;
+                this.clbExperiments.SetItemChecked(i, true);
+                graph.AddExperiment(this.exps[i]);
+            }
+        }
         private void DoStop()
         {
             this.btnAutoLearn.Text = "AutoLearn";
@@ -161,17 +212,30 @@ namespace diploma_neunet
 
         private void AddExperiment_Click(object sender, EventArgs e)
         {
-
+            int maxFx = 5;      //show in Experiments List only maxFx neurons
             var exp = new Experiment();
-            this.addexp = new AddExperiment(exp);
             var str = String.Empty;
-            if (this.addexp.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            bool tl = false;
+            if (new AddExperiment(exp, this.config).ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                /*foreach (var v in exp.fixedNeurons)
-                    str += String.Format("fixed: {0}\n", v.ToString());
-                MessageBox.Show(str);*/
+                str = String.Format("Fixed: {0} neuron(s) (", exp.fixedNeurons.Count);
+                for (int i = 0; i < exp.fixedNeurons.Count - 1; i++)
+                {
+                    str += String.Format("{0}, ", exp.fixedNeurons[i].ToString());
+                    if (i == maxFx)
+                    {
+                        tl = true;
+                        str += "...)";
+                        break;
+                    }
+                }
+
+                if (!tl)
+                    str += String.Format("{0})", exp.fixedNeurons[exp.fixedNeurons.Count - 1]);
+                str += String.Format("; repeats: {0}", exp.repeats);
                 exps.Add(exp);
-                this.clbExperiments.Items.Add(exp.ToString());
+
+                this.clbExperiments.Items.Add(str);
             }
         }
 
@@ -214,6 +278,15 @@ namespace diploma_neunet
             this.tbStatus.Text = str;
         }
 
+        private void SetState(int currentAttempt, int maxAttempts, int currentExperiment, int maxExperiments, List<int> fixedNeurons)
+        {
+            String str = String.Format("Experiment{0}/{1}; Attempt {2}/{3}, fixed (", currentExperiment, maxExperiments, currentAttempt, maxAttempts);
+            for (int i = 0; i < (fixedNeurons.Count - 1); i++)
+                str += String.Format("{0}, ", fixedNeurons[i]);
+            str += String.Format("{0})", fixedNeurons[fixedNeurons.Count - 1]);
+            this.tbStatus.Text = str;
+        }
+
         private void SetState(int attempt)
         {
             this.tbStatus.Text = String.Format("No fixed neurons, attempt {0}/{1}", attempt, AttemptsOnCurrentIndex);
@@ -227,10 +300,13 @@ namespace diploma_neunet
         private void btnExit_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.DoStop();
                 this.Close();
+            }
         }
 
-        private void btnLearn_Click_1(object sender, EventArgs e)
+        private void btnAutoLearn_Click(object sender, EventArgs e)
         {
             if (!this.running)
             {
@@ -245,7 +321,8 @@ namespace diploma_neunet
                 
                 this.btnAutoLearn.Text = "Stop";
                 this.btnLearn.Enabled = false;
-                this.graph.ClearChart();
+
+                if (this.clearChart) this.graph.ClearChart();
                 this.DoFullLearning();
                 MessageBox.Show("All experiments has been ended successfully. Press Graph button for chart viewing.");
             }
@@ -257,6 +334,11 @@ namespace diploma_neunet
             if (this.clbExperiments.SelectedIndex == -1)
                 return;
             this.clbExperiments.Items.RemoveAt(this.clbExperiments.SelectedIndex);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.clearChart = this.cbClearChart.Checked;
         }
     }
 }
