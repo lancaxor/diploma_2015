@@ -21,9 +21,6 @@ namespace diploma_neunet
 
         public void AddExperiment(Experiment exp)
         {
-            //var n = (new Random()).Next(0, 100);
-            //exp.name = "Serie" + n.ToString();
-            //exp.time = n;
 
             if (exp.data.seconds == 0.0)
                 return;
@@ -34,7 +31,6 @@ namespace diploma_neunet
             series.IsValueShownAsLabel = true;
             series.Label = index.ToString();
             index++;
-            //this.mainChart.Series.Add(series);
         }
 
         public void ClearChart()

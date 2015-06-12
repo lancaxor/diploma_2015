@@ -61,7 +61,6 @@ namespace diploma_neunet
                     resultItems.Add(tmpIndex);
                 }
 
-                //Where()Select(x => Int32.Parse(x.Trim()));
                 if (this.tbTitle.Text.Length == 0)
                     this.tbTitle.Text = String.Format("Fixed {0} neuron(s)", resultItems.Count());
 
@@ -83,8 +82,6 @@ namespace diploma_neunet
                 MessageBox.Show("Bad input: Fixed Neurons Index");
                 this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             }
-            //foreach (var vv in v)
-            //    MessageBox.Show(vv.ToString());
         }
 
         private void AddExperiment_FormClosing(object sender, FormClosingEventArgs e)

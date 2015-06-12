@@ -35,7 +35,7 @@ namespace diploma_neunet
             double P0 = 0.5;
             var exp = Math.Exp(input * alpha);
             double res = K * P0 * exp / (K + P0 * (exp - 1));
-            return (res);// > 0.0 ? -1.0 : 1.0);
+            return (res);
         }
 
         public static double BinaryFunction(double input)
@@ -46,7 +46,7 @@ namespace diploma_neunet
         public static double TahnFunction(double input, double alpha)
         {
             double a = 1.7159;
-            double b = alpha;   //2.0 / 3.0;
+            double b = alpha;
             double res = a * Math.Tanh(input * b);
             return res;
         }

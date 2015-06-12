@@ -13,9 +13,6 @@ namespace diploma_neunet
     public partial class MainForm : Form
     {
         NeuNet net;
-        //int picsize = 50;
-        Thread learner;
-        AddExperiment addexp;
         ExperimentsWorker exps;
         GraphWorker graph;
         Boolean running;
@@ -40,13 +37,8 @@ namespace diploma_neunet
             exps = new ExperimentsWorker();
             graph = new GraphWorker();
             getData = new GetDataForAutoLearning(this.config);
-            learner = new Thread(new ThreadStart(this.Learn));
             running = false;
             logger = new Logger();
-        }
-        private void Learn()
-        {
-            //this.learnTime = this.net.LearnInt(this);
         }
         private void btnLearn_Click(object sender, EventArgs e)
         {
@@ -69,20 +61,6 @@ namespace diploma_neunet
                 MessageBox.Show("All experiments has been ended successfully. Press Graph button for chart viewing.");
             }
             this.DoStop();
-
-            /*
-            if (this.clbExperiments.Items.Count < 1)
-                return;
-            learner.Start();
-            for (int j = 0; j < this.clbExperiments.Items.Count; j++)
-            {
-                if (this.clbExperiments.CheckedItems.Count == this.clbExperiments.Items.Count)
-                    break;
-                if (this.clbExperiments.CheckedIndices.Contains(j))
-                    continue;
-                this.clbExperiments.SetItemChecked(j, true);
-            }
-             */
         }
 
         private void DoFullLearning()
@@ -140,7 +118,6 @@ namespace diploma_neunet
                             candidate = rand.Next(0, this.config.NumHidden);
                         while (exp.fixedNeurons.Count(x => x == candidate) > 0);                //check if candidate has not been fixed
 
-                        //this.net.Fix(candidate);
                         exp.fixedNeurons.Add(candidate);
                     }
 
@@ -271,10 +248,7 @@ namespace diploma_neunet
 
         private void btnGraph_Click(object sender, EventArgs e)
         {
-            //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
-            //this.graph.AddExperiment(new Experiment());
             this.graph.Show();
-            
         }
 
         private void btnTest_Click(object sender, EventArgs e)
@@ -283,10 +257,8 @@ namespace diploma_neunet
             {
                 t.StartPosition = FormStartPosition.CenterParent;
                 t.ShowDialog();
-                //t.Show();
             }
         }
-
         internal protected void SetState(String state)
         {
             this.tbStatus.Text = state;
@@ -358,9 +330,11 @@ namespace diploma_neunet
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (this.clbExperiments.SelectedIndex == -1)
+            var sel = this.clbExperiments.SelectedIndex;
+            if (sel == -1)
                 return;
-            this.clbExperiments.Items.RemoveAt(this.clbExperiments.SelectedIndex);
+            this.clbExperiments.Items.RemoveAt(sel);
+            this.exps.RemoveAt(sel);
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)

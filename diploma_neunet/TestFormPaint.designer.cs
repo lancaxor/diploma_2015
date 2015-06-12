@@ -38,7 +38,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(9, 10);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(150, 162);
             this.pictureBox1.TabIndex = 0;
@@ -50,7 +50,7 @@
             // btnClear
             // 
             this.btnClear.Location = new System.Drawing.Point(164, 35);
-            this.btnClear.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(2);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(79, 20);
             this.btnClear.TabIndex = 1;
@@ -61,7 +61,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(164, 10);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(79, 20);
             this.button2.TabIndex = 3;
@@ -89,10 +89,10 @@
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "TestFormPaint";
-            this.Text = "Lyashenko\'s Neural Net";
+            this.Text = "Net Test";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 

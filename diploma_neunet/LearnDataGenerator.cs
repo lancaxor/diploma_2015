@@ -18,13 +18,10 @@ namespace diploma_neunet
         public LearnDataGenerator()
         {
             r = new Random();
-            //Generate(r.Next(0, 9).ToString()[0], 50);      //0..9
-            //Generate((char)('A' + r.Next(0, 25)), 50);   //A..Z
         }
 
         public double[] Generate(char ch, int size)
         {
-            //r = new Random();
             currNoise = r.Next(MaxNoise);
 
             double[] data = new double[size * size];
@@ -40,7 +37,6 @@ namespace diploma_neunet
                 int x = r.Next(size), y = r.Next(size);
                 res.SetPixel(x, y, res.GetPixel(x, y).B > 127 ? Color.Black : Color.White);
             }
-            //MessageBox.Show(ch.ToString());
             //TestForm(res);
             for (int y = 0, i = 0; y < size; y++)
                 for (int x = 0; x < size; x++, i++)

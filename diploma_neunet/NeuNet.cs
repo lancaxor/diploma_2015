@@ -94,7 +94,6 @@ namespace diploma_neunet
                     inputIndecies.Add(i);
                 }
                 
-                //for (currInput = 0; currInput < NumOfInputs; currInput++)
                 while(inputIndecies.Count>0)
                 {
                     currIndex = r.Next(inputIndecies.Count - 1);
@@ -108,7 +107,6 @@ namespace diploma_neunet
                     BackwardPass();
 
                     currErr += CountCurrentError();
-                    //eta /= 2;
                     Application.DoEvents();
                 }
                 this.lastAvgError = this.avgErr;
@@ -116,43 +114,9 @@ namespace diploma_neunet
                 this.era++;
                 currAbsErr = Math.Abs(this.avgErr);
                 this.eta /= 1.01;
-                //this.parent.SetState(String.Format("Epoch: {0}; Error: {1}; Error changing: {2}", this.era, (float)currAbsErr, (float)(lastAvgError - avgErr)));
             } while (currAbsErr > config.minError &&
-                //this.error.Max<double>() > this.config.minError ||
                 Math.Abs(lastAvgError - avgErr) > config.minErrorChange &&
                 this.era < config.maxEpoch);
-
-            /*
-            for (currInput = 0; currInput < 10; currInput++)
-            {
-                do
-                {
-                    if (!this.parent.GetState())
-                        break;
-
-                    GenerateIntInput(currInput);
-                    GenerateIntOutput(currInput);
-
-                    ForwardPass();
-                    BackwardPass();
-
-
-                    this.avgErr = CountCurrentError();
-                    currAbsErr = Math.Abs(this.avgErr);
-
-                    //junk = NeuronProp.ArrToProps(this.output);
-
-                    this.era++;
-                    this.parent.SetState(String.Format("\"{0}\" => Epoch: {1}; Error: {2}; Error changing: {3}", currInput, this.era, (float)currAbsErr, (float)(lastAvgError - avgErr)));
-                    Application.DoEvents();
-
-                } while (currAbsErr > config.minError &&
-                Math.Abs(lastAvgError - avgErr) > config.minErrorChange &&
-                this.era < config.maxEpoch);
-            }*/
-            
-            //MessageBox.Show("Testing time!!!");
-            //this.TestOutputInput();
 
             data.time = DateTime.Now.Subtract(start);
             data.avgErr = this.avgErr;
@@ -223,7 +187,7 @@ namespace diploma_neunet
                 }
         }
 
-        private void BackwardPass() //◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘◘
+        private void BackwardPass()
         {
             double sig;
 
@@ -292,62 +256,8 @@ namespace diploma_neunet
             this.preInput = new double[NumOfInputs][];
             this.preOutput = new double[NumOfInputs][];
         }
-
-        private void TestOutputInput()
-        {
-            for (int i = 0; i < NumOfInputs; i++)
-            {
-                double[] d_21 = new double[N1];
-                for (int i21 = 0; i21 < N1; i21++)      //output => hidden
-                {
-                    d_21[i21] = 0;
-                    for (int j = 0; j < N2; j++)
-                    {
-                        d_21[i21] += (preOutput[i][j] / weights12[i21, j]);
-                    }
-                }
-
-                double[] d_10 = new double[N0];         //this must me in picture!
-                for (int i10 = 0; i10 < N0; i10++)      //hidden => input
-                {
-                    d_10[i10] = 0;
-                    for (int j = 0; j < N1; j++)
-                    {
-                        d_10[i10] += (d_21[j] / weights01[i10, j]);
-                    }
-                }
-                TestForm(d_10);
-            }
-        }
-
-        private void TestForm(double[] dots)
-        {
-            int size = (int)Math.Sqrt(this.N0);
-            Bitmap bmp = new Bitmap(size, size);
-            double avg = (dots.Max() + dots.Min()) / 2;
-            for (int i = 0; i < dots.Count(); i++)
-            {
-                int x = (int) i / size;
-                int y = ((int)(i / size) == 0 ? i : (int)(i % size));
-
-                //double min = Math.Abs(dots.Min()) + dots[i];
-                //int color = (int)(min * 255 / (dots.Max()+Math.Abs(dots.Min())));
-                int color = (dots[i] < avg) ? 255 : 0;
-                bmp.SetPixel(x, y, Color.FromArgb(color, color, color));
-            }
-
-            Form tf = new Form();
-            PictureBox pc = new PictureBox();
-            pc.BackColor = Color.Blue;
-            pc.Image = (Image)bmp;
-            pc.Dock = DockStyle.Fill;
-            tf.Controls.Add(pc);
-            tf.StartPosition = FormStartPosition.CenterParent;
-            tf.ShowDialog();
-        }
         public string Test(double[] inputData)
         {
-            //int res = 0;
             if (this.N0 != inputData.Length)
             {
                 System.Windows.Forms.MessageBox.Show("Wrong input test data!");
@@ -366,9 +276,6 @@ namespace diploma_neunet
                 resInt++;
 
             string res = Array.IndexOf(this.output, this.output.Max<double>()).ToString();
-            //string res = String.Format("{0} ({1})\n", output[0], resInt);
-            //for (int i = 0; i < this.N2; i++)
-                //res += "\n" + this.output[i].ToString();
             return res;
         }
 
@@ -391,8 +298,6 @@ namespace diploma_neunet
 
         private void GenerateIntOutput(int num)
         {
-            //for (int i = 0; i < N2; i++)
-            //    this.correct[i] = ((i == num) ? 1 : 0);
             this.correct = this.preOutput[num];
         }
 
