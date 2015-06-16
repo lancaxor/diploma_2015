@@ -81,6 +81,9 @@ namespace diploma_neunet
             catch (IOException)
             {
                 System.Windows.Forms.MessageBox.Show(String.Format("Cannot write to file {0}. The logger will be disabled for current learning session.", this.path + this.fileName));
+                this.output.Clear();
+                this.set.Clear();
+                this.running = false;
             }
         }
     }

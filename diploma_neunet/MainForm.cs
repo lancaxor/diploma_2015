@@ -72,7 +72,7 @@ namespace diploma_neunet
             int candidate=0;
             if (this.MinFixedCount == 0)            //for 0 fixed neurons
             {
-                for (int n = 0; n < AttemptsOnCurrentIndex; n++)
+                for (int n = 0; n < AttemptsOnCurrentIndex && running; n++)
                 {
                     this.SetState(n + 1);
                     dataForCurrentCount.Add(this.net.LearnInt(this));
@@ -84,7 +84,7 @@ namespace diploma_neunet
                     avgData.errChange += t.errChange;
                     avgData.avgErr += t.avgErr;
                 }
-
+                if (!running) return;
                 avgData.avgErr /= dataForCurrentCount.Count;
                 avgData.epoch /= dataForCurrentCount.Count;
                 avgData.errChange /= dataForCurrentCount.Count;
@@ -107,12 +107,12 @@ namespace diploma_neunet
                 exp.name = String.Format("Fixed count: {0}", i);
                 exp.fixedNeurons = new List<int>();
 
-                for (int j = 0; j < AttemptsOnCurrentCount; j++)            //on current fixed count
+                for (int j = 0; j < AttemptsOnCurrentCount && running; j++)            //on current fixed count
                 {
                     this.net.LearnInt(this);        //without fixing
                     exp.fixedNeurons.Clear();
 
-                    for (int l = 0; l < i; l++)
+                    for (int l = 0; l < i && running; l++)
                     {
                         do
                             candidate = rand.Next(0, this.config.NumHidden);
@@ -121,7 +121,7 @@ namespace diploma_neunet
                         exp.fixedNeurons.Add(candidate);
                     }
 
-                    for (int k = 0; k < AttemptsOnCurrentIndex; k++)        //on current fixed index
+                    for (int k = 0; k < AttemptsOnCurrentIndex && running; k++)        //on current fixed index
                     {
                         if (!this.running)
                         {
@@ -136,7 +136,7 @@ namespace diploma_neunet
                         this.net.Unfix();
                     }
                 }
-
+                if (!running) return;
                 foreach (var t in dataForCurrentCount)
                 {
                     avgData.time += t.time;
@@ -160,7 +160,7 @@ namespace diploma_neunet
         }
         private void DoBatchLearning()
         {
-            for (int i = 0; i < this.exps.Count; i++)
+            for (int i = 0; i < this.exps.Count && running; i++)
             {
                 if (this.clbExperiments.GetItemChecked(i))      //user can check it manually for skipping
                     continue;
@@ -170,7 +170,7 @@ namespace diploma_neunet
 
                 this.clbExperiments.SelectedIndex = i;
 
-                for (int j = 0; j < this.exps[i].repeats; j++)
+                for (int j = 0; j < this.exps[i].repeats && running; j++)
                 {
                     this.SetState(j + 1, this.exps[i].repeats, i + 1, this.exps.Count, this.exps[i].fixedNeurons);
                     this.net.LearnInt(this);
@@ -178,6 +178,7 @@ namespace diploma_neunet
                     allData.Add(this.net.LearnInt(this));
                     this.net.Unfix();
                 }
+                if (!running) return;
 
                 foreach (var t in allData)
                 {
