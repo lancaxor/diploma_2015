@@ -31,14 +31,14 @@ namespace diploma_neunet
                 MessageBox.Show("Min value canot be more then Max value.");
                 this.tbMinFixed.Focus();
             }
-            else if (this.minFixed >= this._config.NumHidden)
+            else if (this.minFixed > this._config.NumHidden)
             {
-                MessageBox.Show(String.Format("Bad Min Fixed value: required integer between 0 and {0}.", this._config.NumHidden - 1));
+                MessageBox.Show(String.Format("Bad Min Fixed value: required integer between 0 and {0}.", this._config.NumHidden));
                 this.tbMinFixed.Focus();
             }
-            else if (this.maxFixed >= this._config.NumHidden)
+            else if (this.maxFixed > this._config.NumHidden)
             {
-                MessageBox.Show(String.Format("Bad Max Fixed value: required integer between 0 and {0}.", this._config.NumHidden - 1));
+                MessageBox.Show(String.Format("Bad Max Fixed value: required integer between 0 and {0}.", this._config.NumHidden));
                 this.tbMaxFixed.Focus();
             }
             else

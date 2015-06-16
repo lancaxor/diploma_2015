@@ -74,7 +74,7 @@ namespace diploma_neunet
             {
                 for (int n = 0; n < AttemptsOnCurrentIndex && running; n++)
                 {
-                    this.SetState(n + 1);
+                    this.SetState(n + 1, this.AttemptsOnCurrentCount);
                     dataForCurrentCount.Add(this.net.LearnInt(this));
                 }
                 foreach (var t in dataForCurrentCount)
@@ -109,10 +109,10 @@ namespace diploma_neunet
 
                 for (int j = 0; j < AttemptsOnCurrentCount && running; j++)            //on current fixed count
                 {
-                    this.net.LearnInt(this);        //without fixing
+                    //this.net.LearnInt(this);        //without fixing
                     exp.fixedNeurons.Clear();
 
-                    for (int l = 0; l < i && running; l++)
+                    for (int l = 0; l < i && running; l++)      //get random fixed index
                     {
                         do
                             candidate = rand.Next(0, this.config.NumHidden);
@@ -172,9 +172,17 @@ namespace diploma_neunet
 
                 for (int j = 0; j < this.exps[i].repeats && running; j++)
                 {
-                    this.SetState(j + 1, this.exps[i].repeats, i + 1, this.exps.Count, this.exps[i].fixedNeurons);
-                    this.net.LearnInt(this);
-                    this.net.Fix(this.exps[i].fixedNeurons);
+                    if (this.exps[i].fixedNeurons.Count > 0)
+                        this.SetState(j + 1, this.exps[i].repeats, i + 1, this.exps.Count, this.exps[i].fixedNeurons);
+                    else
+                        this.SetState(j + 1, this.exps[i].repeats);
+
+                    if (this.exps[i].fixedNeurons.Count > 0)        //just if we have fixed
+                    {
+                        this.net.LearnInt(this);
+                        this.net.Fix(this.exps[i].fixedNeurons);
+                    }
+
                     allData.Add(this.net.LearnInt(this));
                     this.net.Unfix();
                 }
@@ -220,20 +228,24 @@ namespace diploma_neunet
             bool tl = false;
             if (new AddExperiment(exp, this.config).ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                str = String.Format("Fixed: {0} neuron(s) (", exp.fixedNeurons.Count);
-                for (int i = 0; i < exp.fixedNeurons.Count - 1; i++)
+                if (exp.fixedNeurons.Count > 0)
                 {
-                    str += String.Format("{0}, ", exp.fixedNeurons[i].ToString());
-                    if (i == maxFx)
+                    str = String.Format("Fixed: {0} neuron(s) (", exp.fixedNeurons.Count);
+                    for (int i = 0; i < exp.fixedNeurons.Count - 1; i++)
                     {
-                        tl = true;
-                        str += "...)";
-                        break;
+                        str += String.Format("{0}, ", exp.fixedNeurons[i].ToString());
+                        if (i == maxFx)
+                        {
+                            tl = true;
+                            str += "...)";
+                            break;
+                        }
                     }
-                }
 
-                if (!tl)
-                    str += String.Format("{0})", exp.fixedNeurons[exp.fixedNeurons.Count - 1]);
+                    if (!tl)
+                        str += String.Format("{0})", exp.fixedNeurons[exp.fixedNeurons.Count - 1]);
+                }
+                else str = "Unfixed";
                 str += String.Format("; repeats: {0}", exp.repeats);
                 exps.Add(exp);
 
@@ -284,9 +296,9 @@ namespace diploma_neunet
             this.tbStatus.Text = str;
         }
 
-        private void SetState(int attempt)
+        private void SetState(int attempt, int maxAttemtp)
         {
-            this.tbStatus.Text = String.Format("No fixed neurons, attempt {0}/{1}", attempt, AttemptsOnCurrentIndex);
+            this.tbStatus.Text = String.Format("No fixed neurons, attempt {0}/{1}", attempt, maxAttemtp);
         }
 
         internal protected bool GetState()

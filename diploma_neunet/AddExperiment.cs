@@ -36,7 +36,7 @@ namespace diploma_neunet
                 var raw = from item in v where Int32.TryParse(item, out tmp) select Int32.Parse(item);
                 var indexes = raw.Distinct<int>();
 
-                if ((raw.Count() + randNum) != v.Count())
+                if ((raw.Count() + randNum) != v.Count() && !(this.tbIndexes.Text.Length==0))
                 {
                     MessageBox.Show("Bad input: Fixed Neurons. Required integer.");
                     this.tbIndexes.Focus();

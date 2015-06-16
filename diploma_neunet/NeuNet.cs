@@ -104,9 +104,11 @@ namespace diploma_neunet
                     GenerateIntOutput(currInput);
 
                     ForwardPass();
-                    BackwardPass();
+                    currErr += CountCurrentError(); 
+                    //if (this.error.Max() < this.config.minError)
+                        //continue;
 
-                    currErr += CountCurrentError();
+                    BackwardPass();
                     Application.DoEvents();
                 }
                 this.lastAvgError = this.avgErr;
@@ -205,8 +207,8 @@ namespace diploma_neunet
 
             for (int i = 0; i < N1; i++)        //hidden=>input layer
             {
-                if (fxHidden.Contains(i))   //hidden neuron with index j is fixed
-                    continue;
+                //if (fxHidden.Contains(i))   //hidden neuron with index j is fixed
+                //    continue;
                 sig = 0;
                 for (int k = 0; k < N2; k++)
                     sig += (this.delta[k] * weights12[i, k]);
@@ -248,13 +250,15 @@ namespace diploma_neunet
             this.output = new double[N2];           //output layer output
             this.correct = new double[N2];          //correct output data
             this.error = new double[N2];            //~Abs(correct-incorrect)
-            this.weights01 = new double[N0, N1];    //input-hidden weights
             this.weights12 = new double[N1, N2];    //hidden-output weights
             this.old_weights01 = new double[N0, N1];
             this.old_weights12 = new double[N1, N2];
             this.delta = new double[N2];    // Math.Max(N2, N1)];
             this.preInput = new double[NumOfInputs][];
             this.preOutput = new double[NumOfInputs][];
+
+            if (this.fxHidden.Count == 0)       //alloc only if no fixed neurons
+                this.weights01 = new double[N0, N1];    //input-hidden weights
         }
         public string Test(double[] inputData)
         {
